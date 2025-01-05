@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <link rel="stylesheet" href="login.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script defer src="script.js"></script>
+</head>
+
+<body>
+    <div class="login-card">
+        <div class="logo-container">
+            <!-- <img src="logoipsum.png" alt="Logo" class="logo"> -->
+        </div>
+        <h1 class="title">Sign in to your Account</h1>
+        <p class="subtitle">Enter your email and password to log in</p>
+        <form class="login-form">
+            <div class="input-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" placeholder="Rizkifatra22@gmail.com" required>
+            </div>
+            <div class="input-group">
+                <label for="password">Password</label>
+                <div class="password-wrapper">
+                    <input type="password" id="password" placeholder="******" required>
+                    <button type="button" class="toggle-password">👁️</button>
+                </div>
+            </div>
+            <a href="#" class="forgot-password">Forgot Password?</a>
+            <button type="submit" class="login-button">Log In</button>
+        </form>
+        <div class="divider">
+            <span>Or</span>
+        </div>
+        <button class="social-button google">Continue with Google</button>
+        <p class="signup-text">Don’t have an account? <a href="#" class="signup-link">Sign Up</a></p>
+    </div>
+</body>
+
+</html>

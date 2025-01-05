@@ -1,0 +1,115 @@
+body {
+    background-color: #f8f9fa;
+    /* Light background */
+    color: #212529;
+    /* Dark text */
+    display: flex;
+
+    height: 100vh;
+    /* Full viewport height */
+    margin: 0;
+    font-family: 'Arial', sans-serif;
+    /* Consistent font */
+    align-items: ;
+}
+
+.leaderboard {
+    width: 90%;
+    text-align: center;
+    background-color: #fff;
+    /* White background for leaderboard */
+    border-radius: 12px;
+    /* Rounded corners */
+    padding: 20px;
+    height: auto;
+    width: 100%;
+}
+
+.trophies img {
+    width: 50px;
+    height: 50px;
+}
+
+.list {
+    margin-top: 20px;
+}
+
+.list-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+    background-color: #e9ecef;
+    /* Light gray background */
+    border-radius: 8px;
+    /* Rounded corners */
+    margin-bottom: 10px;
+    border: 1px solid #dee2e6;
+    /* Light border */
+    transition: all 0.3s ease;
+    /* Smooth transitions */
+}
+
+.list-item:hover {
+    background-color: #28a745;
+    /* Green highlight on hover */
+    color: #fff;
+    /* White text on hover */
+}
+
+.avatar {
+    width: 40px;
+    height: 40px;
+    background-color: #fff;
+    /* White background for avatars */
+    border: 1px solid #28a745;
+    /* Green border */
+    border-radius: 50%;
+    /* Circle shape */
+    margin-right: 10px;
+}
+
+.username {
+    display: flex;
+    align-items: center;
+    font-size: 16px;
+    color: #212529;
+    /* Dark text color */
+}
+
+.points {
+    font-size: 16px;
+    font-weight: bold;
+    color: #28a745;
+    /* Green color for points */
+}
+
+/* Responsiveness */
+@media (max-width: 576px) {
+    .list-item {
+        padding: 8px;
+    }
+
+    .username {
+        font-size: 14px;
+    }
+
+    .points {
+        font-size: 14px;
+    }
+}
+
+.header {
+    display: flex;
+    flex-direction: column;
+    /* Stack items vertically */
+    justify-content: flex-start;
+    /* Align items to the start (left) */
+    align-items: flex-start;
+
+    max-width: 400px;
+    text-align: left;
+    /* Ensure text is aligned to the left */
+    background-color: #fff;
+    padding-bottom: 5px;
+}

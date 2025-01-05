@@ -1,0 +1,64 @@
+/* General styles */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa;
+    /* Light background */
+    color: #212529;
+    /* Standard text color */
+}
+
+/* Header styles */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #28a745;
+    /* Green background */
+    color: white;
+    padding: 10px 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.header .icon,
+.header .profile {
+    font-size: 20px;
+    cursor: pointer;
+}
+
+/* Container styles */
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: calc(100vh - 60px);
+    /* Adjust for header height */
+    gap: 15px;
+    padding: 20px;
+}
+
+/* Button styles */
+.btn {
+    background-color: #28a745;
+    /* Green button */
+    color: white;
+    padding: 15px 30px;
+    font-size: 18px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.btn:hover {
+    background-color: #218838;
+    /* Darker green on hover */
+    transform: scale(1.05);
+}
+
+.btn:active {
+    background-color: #218838;
+    /* Darker green on active */
+    transform: scale(1);
+}
