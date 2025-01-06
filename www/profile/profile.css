@@ -1,0 +1,81 @@
+/* General Styles */
+body.custom-background {
+    background-color: #ffffff !important;
+    /* White background */
+    color: #212529 !important;
+    /* Dark text */
+    font-family: Arial, sans-serif !important;
+    /* Use consistent font */
+    margin: 0;
+    padding: 0;
+}
+
+.card {
+    border: none !important;
+    border-radius: 8px !important;
+    background-color: #fff !important;
+    /* White background for cards */
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1) !important;
+    /* Subtle shadow */
+    padding: 20px !important;
+    margin-bottom: 20px !important;
+    /* Spacing between cards */
+}
+
+.card h6 {
+    font-size: 18px !important;
+    font-weight: bold !important;
+    color: #212529 !important;
+    /* Dark text */
+}
+
+.card small {
+    font-size: 12px !important;
+    color: #6c757d !important;
+    /* Subtle muted text */
+}
+
+.rounded-circle {
+    font-size: 18px !important;
+    cursor: pointer !important;
+    background-color: #e9ecef !important;
+    /* Light gray for neutral circles */
+    color: #212529 !important;
+    /* Dark text */
+    border: 1px solid #dee2e6 !important;
+    /* Light border */
+    transition: background-color 0.3s ease, color 0.3s ease !important;
+}
+
+.rounded-circle:hover {
+    background-color: #28a745 !important;
+    /* Green hover background */
+    color: #fff !important;
+    /* White text on hover */
+}
+
+.text-muted {
+    color: #6c757d !important;
+    /* Subtle gray text */
+}
+
+.btn-outline-light {
+    color: #28a745 !important;
+    /* Green text */
+    border-color: #28a745 !important;
+    background-color: transparent !important;
+    transition: background-color 0.3s ease, color 0.3s ease !important;
+}
+
+.btn-outline-light:hover {
+    background-color: #28a745 !important;
+    /* Green background */
+    color: white !important;
+    /* White text */
+}
+
+/* Trophies */
+.trophies {
+    width: 50px;
+    height: 50px;
+}

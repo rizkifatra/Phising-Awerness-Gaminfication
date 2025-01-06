@@ -1,27 +1,22 @@
 body {
     background-color: #f8f9fa;
-    /* Light background */
     color: #212529;
-    /* Dark text */
     display: flex;
-
     height: 100vh;
-    /* Full viewport height */
     margin: 0;
     font-family: 'Arial', sans-serif;
-    /* Consistent font */
-    align-items: ;
+    align-items: center;
+    flex-direction: column;
 }
 
 .leaderboard {
     width: 90%;
     text-align: center;
     background-color: #fff;
-    /* White background for leaderboard */
     border-radius: 12px;
     /* Rounded corners */
     padding: 20px;
-    height: auto;
+    height: 80%;
     width: 100%;
 }
 
@@ -102,14 +97,11 @@ body {
 .header {
     display: flex;
     flex-direction: column;
-    /* Stack items vertically */
-    justify-content: flex-start;
-    /* Align items to the start (left) */
-    align-items: flex-start;
-
-    max-width: 400px;
+    width: 100%;
     text-align: left;
-    /* Ensure text is aligned to the left */
-    background-color: #fff;
-    padding-bottom: 5px;
+    background-color: #28a745;
+    padding: 10px 20px;
+    margin: 0;
+    align-items: flex-start;
+    box-sizing: border-box;
 }
