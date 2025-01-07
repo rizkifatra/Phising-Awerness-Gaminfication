@@ -1,27 +1,38 @@
-/* styles.css */
-body {
-  font-family: 'Inter', sans-serif;
+/* Reset and Global Styles */
+* {
   margin: 0;
   padding: 0;
-  background-color: #fff;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
   display: flex;
   justify-content: center;
   align-items: center;
+  background-color: #f9f9f9;
+  /* Light background */
   height: 100vh;
+  margin: 0;
+  color: #212529;
+  /* Dark text color */
 }
 
-.login-container {
+/* Login Card Container */
+.login-card {
   width: 100%;
   max-width: 400px;
-  padding: 20px;
-  background-color: #fff;
+  background-color: #ffffff;
+  /* White background */
   border-radius: 16px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  height: 100%;
+  /* Subtle shadow */
+  padding: 20px;
+  text-align: center;
 }
 
+/* Logo Styles */
 .logo-container {
-  text-align: center;
   margin-bottom: 20px;
 }
 
@@ -29,23 +40,27 @@ body {
   height: 40px;
 }
 
+/* Title and Subtitle */
 .title {
-  text-align: center;
   font-size: 24px;
   font-weight: 700;
-  margin: 0;
+  margin-bottom: 10px;
+  color: #212529;
+  /* Dark text */
 }
 
 .subtitle {
-  text-align: center;
   font-size: 14px;
   color: #6c757d;
+  /* Muted text */
   margin-bottom: 20px;
 }
 
+/* Login Form Styles */
 .login-form {
   display: flex;
   flex-direction: column;
+  margin-bottom: 20px;
 }
 
 .input-group {
@@ -55,6 +70,8 @@ body {
 .input-group label {
   font-size: 14px;
   font-weight: 500;
+  color: #212529;
+  /* Dark text */
   margin-bottom: 6px;
   display: block;
 }
@@ -62,17 +79,27 @@ body {
 .input-group input {
   width: 100%;
   padding: 12px;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
   font-size: 14px;
+  border: 1px solid #e0e0e0;
+  /* Light border */
+  border-radius: 8px;
+  background-color: #ffffff;
+  /* White background */
+  color: #212529;
+  /* Dark text */
 }
 
+.input-group input:focus {
+  border-color: #007bff;
+  /* Blue border on focus */
+  outline: none;
+  background-color: #f1f9ff;
+  /* Light blue background */
+}
+
+/* Password Wrapper */
 .password-wrapper {
   position: relative;
-}
-
-.password-wrapper input {
-  width: 100%;
 }
 
 .password-wrapper .toggle-password {
@@ -82,36 +109,56 @@ body {
   transform: translateY(-50%);
   background: none;
   border: none;
-  cursor: pointer;
   font-size: 16px;
+  cursor: pointer;
+  color: #007bff;
+  /* Blue toggle button */
 }
 
+/* Forgot Password Link */
 .forgot-password {
   text-align: right;
   font-size: 14px;
   color: #007bff;
+  /* Blue text */
   text-decoration: none;
   margin-bottom: 20px;
 }
 
+.forgot-password:hover {
+  text-decoration: underline;
+}
+
+/* Login Button */
 .login-button {
   width: 100%;
   padding: 12px;
-  background-color: #007bff;
-  color: #fff;
+  background-color: #28a745;
+  /* Blue background */
+  color: #ffffff;
+  /* White text */
   border: none;
   border-radius: 8px;
   font-size: 16px;
   font-weight: 600;
   cursor: pointer;
-  margin-bottom: 20px;
+  transition: background-color 0.3s ease;
 }
 
+.login-button:hover {
+  background-color: #218838;
+  /* Darker blue on hover */
+}
+
+/* Divider Styles */
 .divider {
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 20px 0;
   font-size: 14px;
   color: #6c757d;
-  margin: 20px 0;
+  /* Muted text */
   position: relative;
 }
 
@@ -119,10 +166,10 @@ body {
 .divider::after {
   content: '';
   position: absolute;
-  top: 50%;
-  width: 40%;
   height: 1px;
+  width: 40%;
   background: #e0e0e0;
+  /* Light gray */
 }
 
 .divider::before {
@@ -133,32 +180,62 @@ body {
   right: 0;
 }
 
+.divider span {
+  background: #fff;
+  padding: 0 10px;
+  z-index: 1;
+}
+
+/* Social Button */
 .social-button {
   width: 100%;
   padding: 12px;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
   font-size: 14px;
-  margin-bottom: 10px;
+  border: 1px solid #e0e0e0;
+  /* Light border */
+  border-radius: 8px;
+  background-color: #ffffff;
+  /* White background */
+  color: #212529;
+  /* Dark text */
   cursor: pointer;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: background-color 0.3s ease;
+}
+
+.social-button:hover {
+  background-color: #f8f9fa;
+  /* Light gray on hover */
 }
 
 .google {
-  background-color: #fff;
+  color: #28a745;
+  /* Google red color */
 }
 
 .facebook {
-  background-color: #e7f3ff;
+  color: #1877f2;
+  /* Facebook blue color */
 }
 
+/* Sign Up Link */
 .signup-text {
-  text-align: center;
   font-size: 14px;
   color: #6c757d;
+  /* Muted text */
 }
 
 .signup-link {
   color: #007bff;
+  /* Blue text */
   text-decoration: none;
   font-weight: 600;
+}
+
+.signup-link:hover {
+  text-decoration: underline;
 }

@@ -1,23 +1,33 @@
 /* General Styles */
-body.custom-background {
+body {
     background-color: #ffffff !important;
-    /* White background */
     color: #212529 !important;
-    /* Dark text */
     font-family: Arial, sans-serif !important;
-    /* Use consistent font */
     margin: 0;
     padding: 0;
 }
+
+.header {
+    width: 100%;
+    background-color: #28a745;
+    /* Green background */
+    color: #fff;
+    /* White text */
+    font-size: 20px;
+    font-weight: bold;
+    text-align: left;
+    padding: 20px 45px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    /* Subtle shadow */
+}
+
 
 .card {
     border: none !important;
     border-radius: 8px !important;
     background-color: #fff !important;
-    /* White background for cards */
     box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1) !important;
-    /* Subtle shadow */
-    padding: 20px !important;
+    padding: 10px !important;
     margin-bottom: 20px !important;
     /* Spacing between cards */
 }
@@ -59,23 +69,30 @@ body.custom-background {
     /* Subtle gray text */
 }
 
-.btn-outline-light {
-    color: #28a745 !important;
-    /* Green text */
-    border-color: #28a745 !important;
-    background-color: transparent !important;
-    transition: background-color 0.3s ease, color 0.3s ease !important;
-}
-
-.btn-outline-light:hover {
-    background-color: #28a745 !important;
-    /* Green background */
-    color: white !important;
-    /* White text */
-}
-
 /* Trophies */
 .trophies {
     width: 50px;
     height: 50px;
+}
+
+.btn {
+    color: white !important;
+    width: 60%;
+    padding: 15px 30px;
+    font-size: 18px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: #28a745 !important;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.btn:hover {
+    background-color: #218838;
+    transform: scale(1.05);
+}
+
+.btn:active {
+    background-color: #218838;
+    transform: scale(1);
 }

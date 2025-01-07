@@ -1,45 +1,61 @@
-/* signup-styles.css */
-body {
-    font-family: 'Inter', sans-serif;
+/* General reset */
+* {
     margin: 0;
     padding: 0;
-    background-color: #f9f9f9;
+    box-sizing: border-box;
+}
+
+/* Body styling */
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #f8f9fa;
+    /* Light background */
+    color: #212529;
+    /* Dark text */
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
-    width: 100%;
+    margin: 0;
 }
 
+/* Signup container */
 .signup-container {
-    height: 100vh;
     width: 100%;
     max-width: 400px;
-    padding: 20px;
     background-color: #fff;
+    /* White card */
     border-radius: 16px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    /* Subtle shadow */
+    padding: 20px;
 }
 
+/* Signup card */
 .signup-card {
     position: relative;
 }
 
+/* Back button */
 .back-button {
     background: none;
     border: none;
-    font-size: 18px;
+    font-size: 16px;
     cursor: pointer;
+    color: #28a745;
+    /* Green */
     position: absolute;
     top: 10px;
     left: 10px;
 }
 
+/* Title and subtitle */
 .title {
     text-align: center;
     font-size: 24px;
     font-weight: 700;
-    margin-top: 30px;
+    color: #212529;
+    /* Dark text */
     margin-bottom: 10px;
 }
 
@@ -47,9 +63,11 @@ body {
     text-align: center;
     font-size: 14px;
     color: #6c757d;
+    /* Muted text */
     margin-bottom: 20px;
 }
 
+/* Form styles */
 .signup-form {
     display: flex;
     flex-direction: column;
@@ -62,6 +80,7 @@ body {
 .input-group label {
     font-size: 14px;
     font-weight: 500;
+    color: #212529;
     margin-bottom: 6px;
     display: block;
 }
@@ -69,21 +88,23 @@ body {
 .input-group input {
     width: 100%;
     padding: 12px;
-    border: 1px solid #e0e0e0;
+    border: 1px solid #ced4da;
+    /* Light border */
     border-radius: 8px;
     font-size: 14px;
+    color: #212529;
+    background-color: #fff;
 }
 
-.phone-wrapper {
-    display: flex;
-    align-items: center;
-    gap: 10px;
+.input-group input:focus {
+    border-color: #28a745;
+    /* Green border on focus */
+    background-color: #e9ecef;
+    /* Light gray background */
+    outline: none;
 }
 
-.country-code {
-    font-size: 16px;
-}
-
+/* Password wrapper */
 .password-wrapper {
     position: relative;
 }
@@ -99,23 +120,31 @@ body {
     transform: translateY(-50%);
     background: none;
     border: none;
+    color: #28a745;
     cursor: pointer;
-    font-size: 16px;
+    font-size: 14px;
 }
 
+/* Register button */
 .register-button {
-    width: 100%;
-    padding: 12px;
-    background-color: #007bff;
+    background-color: #28a745;
+    /* Green */
     color: #fff;
     border: none;
     border-radius: 8px;
+    padding: 12px;
     font-size: 16px;
     font-weight: 600;
     cursor: pointer;
-    margin-top: 20px;
+    transition: background-color 0.3s ease;
 }
 
+.register-button:hover {
+    background-color: #218838;
+    /* Darker green */
+}
+
+/* Login text and link */
 .login-text {
     text-align: center;
     font-size: 14px;
@@ -124,13 +153,12 @@ body {
 }
 
 .login-link {
-    color: #007bff;
+    color: #28a745;
+    /* Green link */
     text-decoration: none;
     font-weight: 600;
 }
 
-
-.block {
-    height: 120px;
-    ;
+.login-link:hover {
+    text-decoration: underline;
 }
