@@ -4,22 +4,338 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FLOW </title>
-    <style>
+    <title>Login Page</title>
+    <link rel="stylesheet" href="login.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script defer src="script.js"></script>
 
-    </style>
+
 </head>
+<style>
+    /* Reset and Global Styles */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Inter', sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #f9f9f9;
+        /* Light background */
+        height: 100vh;
+        margin: 0;
+        color: #212529;
+        /* Dark text color */
+    }
+
+    /* Login Card Container */
+    .login-card {
+        width: 100%;
+        max-width: 400px;
+        background-color: #ffffff;
+        /* White background */
+        border-radius: 16px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        /* Subtle shadow */
+        padding: 20px;
+        text-align: center;
+    }
+
+    /* Logo Styles */
+    .logo-container {
+        margin-bottom: 20px;
+    }
+
+    .logo {
+        height: 40px;
+    }
+
+    /* Title and Subtitle */
+    .title {
+        font-size: 24px;
+        font-weight: 700;
+        margin-bottom: 10px;
+        color: #212529;
+        /* Dark text */
+    }
+
+    .subtitle {
+        font-size: 14px;
+        color: #6c757d;
+        /* Muted text */
+        margin-bottom: 20px;
+    }
+
+    /* Login Form Styles */
+    .login-form {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 20px;
+    }
+
+    .input-group {
+        margin-bottom: 16px;
+    }
+
+    .input-group label {
+        font-size: 14px;
+        font-weight: 500;
+        color: #212529;
+        /* Dark text */
+        margin-bottom: 6px;
+        display: block;
+    }
+
+    .input-group input {
+        width: 100%;
+        padding: 12px;
+        font-size: 14px;
+        border: 1px solid #e0e0e0;
+        /* Light border */
+        border-radius: 8px;
+        background-color: #ffffff;
+        /* White background */
+        color: #212529;
+        /* Dark text */
+    }
+
+    .input-group input:focus {
+        border-color: #007bff;
+        /* Blue border on focus */
+        outline: none;
+        background-color: #f1f9ff;
+        /* Light blue background */
+    }
+
+    /* Password Wrapper */
+    .password-wrapper {
+        position: relative;
+    }
+
+    .password-wrapper .toggle-password {
+        position: absolute;
+        top: 50%;
+        right: 12px;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        font-size: 16px;
+        cursor: pointer;
+        color: #007bff;
+        /* Blue toggle button */
+    }
+
+    /* Forgot Password Link */
+    .forgot-password {
+        text-align: right;
+        font-size: 14px;
+        color: #007bff;
+        /* Blue text */
+        text-decoration: none;
+        margin-bottom: 20px;
+    }
+
+    .forgot-password:hover {
+        text-decoration: underline;
+    }
+
+    /* Login Button */
+    .login-button {
+        width: 100%;
+        padding: 12px;
+        background-color: #28a745;
+        /* Blue background */
+        color: #ffffff;
+        /* White text */
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .login-button:hover {
+        background-color: #218838;
+        /* Darker blue on hover */
+    }
+
+    /* Divider Styles */
+    .divider {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 20px 0;
+        font-size: 14px;
+        color: #6c757d;
+        /* Muted text */
+        position: relative;
+    }
+
+    .divider::before,
+    .divider::after {
+        content: '';
+        position: absolute;
+        height: 1px;
+        width: 40%;
+        background: #e0e0e0;
+        /* Light gray */
+    }
+
+    .divider::before {
+        left: 0;
+    }
+
+    .divider::after {
+        right: 0;
+    }
+
+    .divider span {
+        background: #fff;
+        padding: 0 10px;
+        z-index: 1;
+    }
+
+    /* Social Button */
+    .social-button {
+        width: 100%;
+        padding: 12px;
+        font-size: 14px;
+        border: 1px solid #e0e0e0;
+        /* Light border */
+        border-radius: 8px;
+        background-color: #ffffff;
+        /* White background */
+        color: #212529;
+        /* Dark text */
+        cursor: pointer;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        transition: background-color 0.3s ease;
+    }
+
+    .social-button:hover {
+        background-color: #f8f9fa;
+        /* Light gray on hover */
+    }
+
+    .google {
+        color: #28a745;
+        /* Google red color */
+    }
+
+    .facebook {
+        color: #1877f2;
+        /* Facebook blue color */
+    }
+
+    /* Sign Up Link */
+    .signup-text {
+        font-size: 14px;
+        color: #6c757d;
+        /* Muted text */
+    }
+
+    .signup-link {
+        color: #007bff;
+        /* Blue text */
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+    .signup-link:hover {
+        text-decoration: underline;
+    }
+</style>
 
 <body>
-    <a href="login/login.html">login</a>
-    <a href="home/home.html">home</a>
-    <a href="register/register.html">register</a>
-    <a href="play/level/level.html">level</a>
-    <a href="leaderboard/leaderboard.html">leaderboard</a>
-    <a href="profile/manage/manage.html">manage Profile</a>
-    <a href="progress/progress.html">progress</a>
-    <a href="setting/setting.html">setting</a>
-    <a href="profile/profile.html">Profile</a>
+    <div class="login-card">
+        <div class="logo-container">
+            <!-- <img src="logoipsum.png" alt="Logo" class="logo"> -->
+        </div>
+        <h1 class="title">Sign in to your Account</h1>
+        <p class="subtitle">Enter your email and password to log in</p>
+        <form class="login-form">
+            <div class="input-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" placeholder="Rizkifatra22@gmail.com" required>
+            </div>
+            <div class="input-group">
+                <label for="password">Password</label>
+                <div class="password-wrapper">
+                    <input type="password" id="password" placeholder="******" required>
+                    <button type="button" class="toggle-password">👁️</button>
+                </div>
+            </div>
+            <a href="#" class="forgot-password">Forgot Password?</a>
+            <button type="submit" class="login-button">Log In</button>
+        </form>
+        <div class="divider">
+            <span>Or</span>
+        </div>
+        <button class="social-button google">Continue with Google</button>
+        <p class="signup-text">Don’t have an account? <a href="#" class="signup-link">Sign Up</a></p>
+    </div>
 </body>
+
+<script>
+    document.getElementById("loginButton").addEventListener("click", async () => {
+        const email = document.getElementById("login-email").value;
+        const password = document.getElementById("login-password").value;
+
+        if (!email || !password) {
+            document.getElementById("login-error-message").textContent =
+                "Please fill in all fields.";
+            return;
+        }
+
+        try {
+            const response = await fetch("http://localhost:8080/api/login", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email, password }),
+            });
+
+            if (response.ok) {
+                alert("Login successful!");
+            } else {
+                document.getElementById("login-error-message").textContent =
+                    "Invalid credentials.";
+            }
+        } catch (error) {
+            console.error(error);
+            document.getElementById("login-error-message").textContent =
+                "An error occurred.";
+        }
+    });
+
+    // Handle Google Login
+    function handleGoogleLogin(response) {
+        console.log("Google Token:", response.credential);
+
+        fetch("http://localhost:8080/api/google-login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ token: response.credential }),
+        })
+            .then((res) => res.json())
+            .then((data) => {
+                alert("Google Login successful!");
+                console.log(data);
+            })
+            .catch((error) => {
+                console.error("Google Login error:", error);
+            });
+    }
+
+</script>
+
 
 </html>

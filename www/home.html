@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        .header {
+            background-color: #28a745;
+            padding: 1rem;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        .main-container {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding-top: 70px;
+            background-color: #f8f9fa;
+        }
+
+        .welcome-text {
+            color: #28a745;
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .action-btn {
+            width: 250px;
+            padding: 1rem;
+            margin: 0.5rem;
+            border: none;
+            border-radius: 10px;
+            background-color: #28a745;
+            color: white;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+
+        .action-btn:hover {
+            background-color: #218838;
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.2);
+        }
+
+        .profile-btn {
+            background: none;
+            border: none;
+            padding: 0.5rem;
+        }
+
+        .profile-btn i {
+            font-size: 2rem;
+            color: white;
+            transition: transform 0.3s ease;
+        }
+
+        .profile-btn:hover i {
+            transform: scale(1.1);
+        }
+
+        .logo {
+            max-width: 150px;
+            margin-bottom: 2rem;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="d-flex justify-content-end pe-3">
+            <button class="profile-btn" id="profileButton">
+                <i class="bi bi-person-circle"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-container">
+        <img src="images/trophy.png" alt="Logo" class="logo">
+        <h1 class="welcome-text">Welcome to Quiz Game</h1>
+
+        <div class="d-flex flex-column align-items-center">
+            <button class="action-btn" onclick="window.location.href='play.html'">
+                <i class="bi bi-controller me-2"></i> Play Game
+            </button>
+
+            <button class="action-btn" onclick="window.location.href='leaderboard.html'">
+                <i class="bi bi-trophy me-2"></i> Leaderboard
+            </button>
+
+            <button class="action-btn" onclick="window.location.href='setting.html'">
+                <i class="bi bi-trophy me-2"></i> Setting
+            </button>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.getElementById('profileButton').addEventListener('click', () => {
+            window.location.href = 'profile.html';
+        });
+    </script>
+</body>
+
+</html>

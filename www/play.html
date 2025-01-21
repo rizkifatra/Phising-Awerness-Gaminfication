@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Choose Game</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        .game-header {
+            background: #28a745;
+            color: white;
+            padding: 1rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-pills .nav-link {
+            color: #28a745;
+            border: 1px solid #28a745;
+            margin: 0 0.5rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-pills .nav-link.active {
+            background-color: #28a745;
+        }
+
+        .level-btn {
+            width: 100%;
+            aspect-ratio: 1;
+            border: 2px solid #28a745;
+            background: white;
+            color: #28a745;
+            border-radius: 12px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .level-btn:hover {
+            background: #28a745;
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.2);
+        }
+
+        .game-container {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+
+<body class="bg-light">
+    <!-- Header -->
+    <div class="game-header">
+        <div class="container d-flex justify-content-between align-items-center">
+            <h4 class="mb-0">
+                <i class="bi bi-controller"></i> Play Games
+            </h4>
+            <a href="index.html" class="btn btn-outline-light">
+                <i class="bi bi-house"></i>
+            </a>
+        </div>
+    </div>
+
+    <div class="container mt-4">
+        <!-- Game Type Navigation -->
+        <ul class="nav nav-pills justify-content-center mb-4" id="gameTabs">
+            <li class="nav-item">
+                <button class="nav-link active" data-bs-toggle="pill" data-bs-target="#mcq">
+                    <i class="bi bi-list-check"></i> MCQ
+                </button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link" data-bs-toggle="pill" data-bs-target="#fillBlank">
+                    <i class="bi bi-input-cursor"></i> Fill Blank
+                </button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link" data-bs-toggle="pill" data-bs-target="#puzzle">
+                    <i class="bi bi-puzzle"></i> Puzzle
+                </button>
+            </li>
+        </ul>
+
+        <!-- Game Content -->
+        <div class="tab-content game-container">
+            <!-- MCQ Section -->
+            <div class="tab-pane fade show active" id="mcq">
+                <h3 class="text-center text-success mb-4">Multiple Choice Questions</h3>
+                <div class="row g-4" id="mcq-levels">
+                    <!-- Level buttons will be dynamically inserted here -->
+                    <div class="text-center">
+                        <div class="spinner-border text-success" role="status">
+                            <span class="visually-hidden">Loading levels...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Fill Blank Section -->
+            <div class="tab-pane fade" id="fillBlank">
+                <h3 class="text-center text-success mb-4">Fill in the Blanks</h3>
+                <div class="row g-4" id="fill-levels">
+                    <!-- Level buttons will be dynamically inserted here -->
+                    <div class="text-center">
+                        <div class="spinner-border text-success" role="status">
+                            <span class="visually-hidden">Loading levels...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Puzzle Section -->
+            <div class="tab-pane fade" id="puzzle">
+                <h3 class="text-center text-success mb-4">Puzzle Challenge</h3>
+                <div class="row g-4" id="puzzle-levels">
+                    <!-- Level buttons will be dynamically inserted here -->
+                    <div class="text-center">
+                        <div class="spinner-border text-success" role="status">
+                            <span class="visually-hidden">Loading levels...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<!-- Keep existing HTML structure -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    class QuizGame {
+        constructor() {
+            this.params = new URLSearchParams(window.location.search);
+            this.gameType = this.params.get('type') || 'mcq';
+            this.level = this.params.get('level') || '1';
+            this.score = 0;
+            this.currentQuestion = 0;
+            this.questions = [];
+            this.timer = null;
+            this.timeLeft = 300; // 5 minutes
+        }
+
+        async init() {
+            try {
+                this.showLoading();
+                await this.fetchQuestions();
+                this.initializeGame();
+                this.startTimer();
+            } catch (error) {
+                console.error('Error initializing game:', error);
+                this.showError('Failed to load questions');
+            }
+        }
+
+        showLoading() {
+            document.getElementById('question-container').innerHTML = `
+                        <div class="text-center">
+                            <div class="spinner-border text-success" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                        </div>
+                    `;
+        }
+
+        async fetchQuestions() {
+            try {
+                const response = await fetch(`http://localhost:8080/api/questions/${this.gameType}/${this.level}`);
+                if (!response.ok) throw new Error('Failed to fetch questions');
+                const data = await response.json();
+                if (!data || !data.length) throw new Error('No questions available');
+                this.questions = data;
+                this.totalQuestions = data.length;
+            } catch (error) {
+                throw error;
+            }
+        }
+
+        initializeGame() {
+            this.updateProgress();
+            this.loadQuestion();
+            this.updateScore();
+        }
+
+        updateProgress() {
+            const progress = (this.currentQuestion / this.totalQuestions) * 100;
+            document.getElementById('progress').style.width = `${progress}%`;
+        }
+
+        updateScore() {
+            document.getElementById('score').textContent = this.score;
+        }
+
+        startTimer() {
+            this.timer = setInterval(() => {
+                this.timeLeft--;
+                this.updateTimerDisplay();
+                if (this.timeLeft <= 0) this.gameOver('Time\'s up!');
+            }, 1000);
+        }
+
+        updateTimerDisplay() {
+            const minutes = Math.floor(this.timeLeft / 60);
+            const seconds = this.timeLeft % 60;
+            document.getElementById('timer').textContent =
+                `${minutes}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        loadQuestion() {
+            if (!this.questions[this.currentQuestion]) {
+                this.gameOver();
+                return;
+            }
+
+            const question = this.questions[this.currentQuestion];
+            document.getElementById('question-text').textContent = question.question;
+            this.renderAnswerOptions(question);
+        }
+
+        renderAnswerOptions(question) {
+            const container = document.getElementById('answer-container');
+            container.innerHTML = '';
+
+            if (this.gameType === 'mcq') {
+                question.options.forEach((option, index) => {
+                    const button = document.createElement('button');
+                    button.className = 'option-btn';
+                    button.textContent = option;
+                    button.onclick = () => this.checkAnswer(index);
+                    container.appendChild(button);
+                });
+            } else {
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.className = 'form-control mb-3';
+                input.placeholder = 'Your answer...';
+
+                const submitBtn = document.createElement('button');
+                submitBtn.className = 'btn btn-success';
+                submitBtn.textContent = 'Submit';
+                submitBtn.onclick = () => this.checkAnswer(input.value);
+
+                container.appendChild(input);
+                container.appendChild(submitBtn);
+            }
+        }
+
+        gameOver(message = 'Game Complete!') {
+            clearInterval(this.timer);
+            document.getElementById('question-container').innerHTML = `
+                        <div class="text-center">
+                            <h3>${message}</h3>
+                            <p class="h4 mb-4">Final Score: ${this.score}</p>
+                            <button class="btn btn-success" onclick="window.location.href='play.html'">
+                                Play Again
+                            </button>
+                        </div>
+                    `;
+        }
+
+        showError(message) {
+            document.getElementById('question-container').innerHTML = `
+                        <div class="alert alert-danger">
+                            ${message}. Please try again later.
+                        </div>
+                    `;
+        }
+    }
+
+    class GameLevels {
+        constructor() {
+            this.gameTypes = {
+                'mcq': 'mcq-levels',
+                'fill': 'fill-levels',
+                'puzzle': 'puzzle-levels'
+            };
+            this.initializeLevels();
+        }
+
+        async initializeLevels() {
+            try {
+                await this.fetchAndDisplayLevels('mcq');
+                await this.fetchAndDisplayLevels('fill');
+                await this.fetchAndDisplayLevels('puzzle');
+            } catch (error) {
+                console.error('Error loading levels:', error);
+            }
+        }
+
+        async fetchAndDisplayLevels(gameType) {
+            try {
+                console.log(`Fetching levels for ${gameType}...`);
+                const apiUrl = `api/get_levels.php?type=${gameType}`;
+
+                const response = await fetch(apiUrl);
+                const text = await response.text();
+
+                // Debug logging
+                console.log(`Raw response for ${gameType}:`, text);
+
+                // Only try to parse if we have content
+                if (!text.trim()) {
+                    throw new Error(`Empty response for ${gameType}`);
+                }
+
+                const data = JSON.parse(text);
+
+                if (!response.ok) {
+                    throw new Error(data.error || `Failed to fetch ${gameType} levels`);
+                }
+
+                console.log(`${gameType} levels:`, data);
+                this.displayLevels(gameType, data);
+            } catch (error) {
+                console.error(`Error loading ${gameType} levels:`, error);
+                this.showError(gameType, error.message);
+            }
+        }
+
+        displayLevels(gameType, levels) {
+            const container = document.getElementById(`${gameType}-levels`);
+            container.innerHTML = '';
+
+            if (!levels || levels.length === 0) {
+                container.innerHTML = '<div class="col-12"><div class="alert alert-info">No levels available for this game type</div></div>';
+                return;
+            }
+
+            levels.forEach(level => {
+                const levelBtn = document.createElement('div');
+                levelBtn.className = 'col-4 col-md-2';
+                levelBtn.innerHTML = `
+                    <button class="level-btn" data-game="${gameType}" data-level="${level}">
+                        ${level}
+                    </button>
+                `;
+                container.appendChild(levelBtn);
+            });
+
+            this.attachLevelClickHandlers(container);
+        }
+
+        showError(gameType, message) {
+            const container = document.getElementById(`${gameType}-levels`);
+            container.innerHTML = `
+                <div class="col-12">
+                    <div class="alert alert-danger">
+                        Failed to load levels: ${message}
+                    </div>
+                </div>
+            `;
+        }
+
+        attachLevelClickHandlers(container) {
+            container.querySelectorAll('.level-btn').forEach(button => {
+                button.addEventListener('click', () => {
+                    const gameType = button.dataset.game;
+                    const level = button.dataset.level;
+                    let gamePath;
+
+                    switch (gameType) {
+                        case 'mcq':
+                            gamePath = 'mcq-game.html';
+                            break;
+                        case 'fill':
+                            gamePath = 'fillblank-game.html';
+                            break;
+                        case 'puzzle':
+                            gamePath = 'puzzle-game.html';
+                            break;
+                    }
+
+                    window.location.href = `/PAG/www/games/${gamePath}?level=${level}`;
+                });
+            });
+        }
+    }
+
+    // Initialize the game levels when the page loads
+    document.addEventListener('DOMContentLoaded', () => {
+        new GameLevels();
+    });
+</script>
+
+</html>

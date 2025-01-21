@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leaderboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        .top-players {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            border-radius: 15px;
+            padding: 2rem;
+            color: white;
+        }
+
+        .player-card {
+            text-align: center;
+            padding: 1rem;
+        }
+
+        .avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: #e9ecef;
+            display: inline-block;
+        }
+
+        .top-avatar {
+            width: 80px;
+            height: 80px;
+            border: 3px solid #ffd700;
+        }
+
+        .list-item {
+            padding: 1rem;
+            border-bottom: 1px solid #e9ecef;
+            transition: background-color 0.3s;
+        }
+
+        .list-item:hover {
+            background-color: #f8f9fa;
+        }
+
+        .points {
+            color: #28a745;
+            font-weight: bold;
+        }
+
+        .rank {
+            font-weight: bold;
+            min-width: 30px;
+        }
+
+        .search-box {
+            border-radius: 20px;
+            border: 1px solid #ced4da;
+            padding-left: 2.5rem;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6c757d;
+        }
+    </style>
+</head>
+
+<body class="bg-light">
+    <nav class="navbar bg-success">
+        <div class="container">
+            <a href="index.html" class="navbar-brand text-white">
+                <i class="bi bi-arrow-left"></i> Back
+            </a>
+            <span class="navbar-text text-white">
+                Leaderboard
+            </span>
+        </div>
+    </nav>
+
+    <div class="container py-4">
+        <!-- Search Bar -->
+        <div class="position-relative mb-4">
+            <i class="bi bi-search search-icon"></i>
+            <input type="text" class="form-control search-box" placeholder="Search players...">
+        </div>
+
+        <!-- Top 3 Players -->
+        <div class="top-players mb-4">
+            <div class="row align-items-center">
+                <!-- 2nd Place -->
+                <div class="col-4 player-card">
+                    <div class="avatar top-avatar mb-2"></div>
+                    <h5 class="mb-1">Player 2</h5>
+                    <div class="h6">895 Pts</div>
+                    <div class="badge bg-light text-dark">2nd</div>
+                </div>
+
+                <!-- 1st Place -->
+                <div class="col-4 player-card">
+                    <div class="avatar top-avatar mb-2" style="border-color: #ffd700;"></div>
+                    <h5 class="mb-1">Player 1</h5>
+                    <div class="h6">1024 Pts</div>
+                    <div class="badge bg-light text-dark">1st</div>
+                </div>
+
+                <!-- 3rd Place -->
+                <div class="col-4 player-card">
+                    <div class="avatar top-avatar mb-2" style="border-color: #cd7f32;"></div>
+                    <h5 class="mb-1">Player 3</h5>
+                    <div class="h6">754 Pts</div>
+                    <div class="badge bg-light text-dark">3rd</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Leaderboard List -->
+        <div class="bg-white rounded-3 shadow-sm">
+            <div class="list">
+                <!-- List items -->
+                <div class="list-item d-flex align-items-center">
+                    <span class="rank me-3">4</span>
+                    <div class="d-flex align-items-center flex-grow-1">
+                        <div class="avatar me-3"></div>
+                        <span>Username</span>
+                    </div>
+                    <span class="points">650 Pts</span>
+                </div>
+
+                <div class="list-item d-flex align-items-center">
+                    <span class="rank me-3">5</span>
+                    <div class="d-flex align-items-center flex-grow-1">
+                        <div class="avatar me-3"></div>
+                        <span>Username</span>
+                    </div>
+                    <span class="points">545 Pts</span>
+                </div>
+
+                <div class="list-item d-flex align-items-center">
+                    <span class="rank me-3">6</span>
+                    <div class="d-flex align-items-center flex-grow-1">
+                        <div class="avatar me-3"></div>
+                        <span>Username</span>
+                    </div>
+                    <span class="points">432 Pts</span>
+                </div>
+
+                <!-- Add more list items as needed -->
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

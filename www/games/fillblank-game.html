@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fill in the Blanks</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        .game-header {
+            background: #28a745;
+            color: white;
+            padding: 1rem;
+        }
+
+        .question-card {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .blank-input {
+            display: inline-block;
+            width: 150px;
+            border: 2px solid #28a745;
+            border-radius: 5px;
+            padding: 5px 10px;
+            margin: 0 5px;
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            line-height: 2;
+            margin-bottom: 2rem;
+        }
+
+        .correct-answer {
+            background-color: #d4edda;
+            border-color: #28a745;
+        }
+
+        .wrong-answer {
+            background-color: #f8d7da;
+            border-color: #dc3545;
+        }
+    </style>
+</head>
+
+<body class="bg-light">
+    <div class="game-header">
+        <div class="container d-flex justify-content-between align-items-center">
+            <h4 class="mb-0">Fill Blanks Level <span id="level-number">1</span></h4>
+            <div class="d-flex align-items-center">
+                <span class="me-4"><i class="bi bi-clock"></i> <span id="timer">5:00</span></span>
+                <span class="me-4"><i class="bi bi-star-fill"></i> Score: <span id="score">0</span></span>
+                <a href="../play.html" class="btn btn-outline-light btn-sm">
+                    <i class="bi bi-x-lg"></i> Exit
+                </a>
+            </div>
+        </div>
+        <div class="progress mt-2" style="height: 5px;">
+            <div id="progress" class="progress-bar bg-warning" style="width: 0%"></div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="question-card">
+            <div class="text-success mb-3">Question <span id="current-question">1</span> of <span
+                    id="total-questions">5</span></div>
+            <div id="question-container"></div>
+            <div class="d-flex justify-content-between mt-4">
+                <button class="btn btn-outline-secondary" onclick="game.previousQuestion()" disabled>
+                    <i class="bi bi-arrow-left"></i> Previous
+                </button>
+                <button class="btn btn-success" onclick="game.submitAnswer()">
+                    Check Answer <i class="bi bi-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class FillBlankGame {
+            constructor() {
+                this.level = parseInt(new URLSearchParams(window.location.search).get('level')) || 1;
+                this.currentQuestionIndex = 0;
+                this.questions = [];
+                this.score = 0;
+                this.timeLeft = 300;
+
+                document.getElementById('level-number').textContent = this.level;
+                this.init();
+                this.startTimer();
+            }
+
+            async init() {
+                try {
+                    await this.loadQuestions();
+                    this.displayQuestion();
+                } catch (error) {
+                    console.error('Error:', error);
+                    this.showError(error.message);
+                }
+            }
+
+            async loadQuestions() {
+                try {
+                    const response = await fetch(`../api/get_fill_questions.php?level=${this.level}`);
+                    const data = await response.json();
+
+                    if (data.error) {
+                        throw new Error(data.error);
+                    }
+
+                    if (!Array.isArray(data) || !data.length) {
+                        throw new Error('No questions available');
+                    }
+
+                    this.questions = data;
+                    document.getElementById('total-questions').textContent = this.questions.length;
+                } catch (error) {
+                    console.error('Error loading questions:', error);
+                    this.showError(`Failed to load questions: ${error.message}`);
+                }
+            }
+
+            displayQuestion() {
+                const question = this.questions[this.currentQuestionIndex];
+                const container = document.getElementById('question-container');
+
+                // Split text by [blank] and create inputs
+                const parts = question.text.split('[blank]');
+                let html = '<div class="question-text">';
+
+                parts.forEach((part, index) => {
+                    html += part;
+                    if (index < parts.length - 1) {
+                        html += `<input type="text" class="blank-input" data-index="${index}">`;
+                    }
+                });
+
+                html += '</div>';
+                container.innerHTML = html;
+
+                // Update progress
+                document.getElementById('current-question').textContent = this.currentQuestionIndex + 1;
+                document.getElementById('progress').style.width =
+                    `${((this.currentQuestionIndex + 1) / this.questions.length) * 100}%`;
+            }
+
+            async submitAnswer() {
+                const question = this.questions[this.currentQuestionIndex];
+                const inputs = document.querySelectorAll('.blank-input');
+                let isCorrect = true;
+
+                inputs.forEach((input, index) => {
+                    const userAnswer = input.value.trim().toLowerCase();
+                    const correctAnswer = question.answers[index].toLowerCase();
+
+                    if (userAnswer === correctAnswer) {
+                        input.classList.add('correct-answer');
+                    } else {
+                        input.classList.add('wrong-answer');
+                        isCorrect = false;
+                    }
+                    input.disabled = true;
+                });
+
+                if (isCorrect) {
+                    this.score += 10;
+                    document.getElementById('score').textContent = this.score;
+                }
+
+                // Move to next question after 1.5 seconds
+                setTimeout(() => {
+                    this.currentQuestionIndex++;
+                    if (this.currentQuestionIndex >= this.questions.length) {
+                        this.gameOver();
+                    } else {
+                        this.displayQuestion();
+                    }
+                }, 1500);
+            }
+
+            startTimer() {
+                const timerElement = document.getElementById('timer');
+                const timer = setInterval(() => {
+                    this.timeLeft--;
+                    const minutes = Math.floor(this.timeLeft / 60);
+                    const seconds = this.timeLeft % 60;
+                    timerElement.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+
+                    if (this.timeLeft <= 0) {
+                        clearInterval(timer);
+                        this.gameOver('Time\'s up!');
+                    }
+                }, 1000);
+            }
+
+            gameOver(message = 'Game Complete!') {
+                document.querySelector('.question-card').innerHTML = `
+                    <div class="text-center">
+                        <h3>${message}</h3>
+                        <p class="h4 mb-4">Final Score: ${this.score}</p>
+                        <button class="btn btn-success" onclick="window.location.href='../play.html'">
+                            Play Again
+                        </button>
+                    </div>
+                `;
+            }
+
+            showError(message) {
+                document.querySelector('.question-card').innerHTML = `
+                    <div class="alert alert-danger">
+                        ${message}. Please try again later.
+                    </div>
+                `;
+            }
+        }
+
+        const game = new FillBlankGame();
+    </script>
+</body>
+
+</html>
