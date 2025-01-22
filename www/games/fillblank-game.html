@@ -10,8 +10,10 @@
     <style>
         .game-header {
             background: #28a745;
+            background: #28a745;
             color: white;
             padding: 1rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
 
         .question-card {
@@ -83,6 +85,42 @@
         </div>
     </div>
 
+    <div class="modal fade completion-modal" id="completionModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title">Level Complete!</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <div class="trophy-icon mb-3">🏆</div>
+                    <h4>Congratulations!</h4>
+                    <p>You've completed Level <span id="completedLevel"></span></p>
+                    <div class="score-detail">
+                        <div class="row">
+                            <div class="col-6 text-start">Final Score:</div>
+                            <div class="col-6 text-end" id="modalScore"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6 text-start">Questions Correct:</div>
+                            <div class="col-6 text-end" id="modalCorrect"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6 text-start">Time Bonus:</div>
+                            <div class="col-6 text-end" id="modalTimeBonus"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="location.reload()">Try Again</button>
+                    <button type="button" class="btn btn-success" id="nextLevelBtn">Next Level</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         class FillBlankGame {
             constructor() {
@@ -91,19 +129,29 @@
                 this.questions = [];
                 this.score = 0;
                 this.timeLeft = 300;
+                this.timer = null;
+                this.startTime = Date.now();
 
+                // Initialize Bootstrap modal
+                this.modal = new bootstrap.Modal(document.getElementById('completionModal'));
+
+                // Set initial level display
                 document.getElementById('level-number').textContent = this.level;
+
+                // Load questions immediately
                 this.init();
-                this.startTimer();
             }
 
             async init() {
                 try {
                     await this.loadQuestions();
-                    this.displayQuestion();
+                    if (this.questions.length > 0) {
+                        this.displayQuestion();
+                        this.startTimer();
+                    }
                 } catch (error) {
-                    console.error('Error:', error);
-                    this.showError(error.message);
+                    console.error('Initialization error:', error);
+                    this.showError('Failed to initialize game');
                 }
             }
 
@@ -112,38 +160,44 @@
                     const response = await fetch(`../api/get_fill_questions.php?level=${this.level}`);
                     const data = await response.json();
 
+                    // Debug logging
+                    console.log('API Response:', data);
+
                     if (data.error) {
                         throw new Error(data.error);
                     }
 
-                    if (!Array.isArray(data) || !data.length) {
+                    if (!Array.isArray(data) || data.length === 0) {
                         throw new Error('No questions available');
                     }
 
                     this.questions = data;
                     document.getElementById('total-questions').textContent = this.questions.length;
                 } catch (error) {
-                    console.error('Error loading questions:', error);
-                    this.showError(`Failed to load questions: ${error.message}`);
+                    console.error('Load questions error:', error);
+                    throw error;
                 }
             }
 
             displayQuestion() {
                 const question = this.questions[this.currentQuestionIndex];
+                if (!question) {
+                    console.error('No question found at index:', this.currentQuestionIndex);
+                    return;
+                }
+
                 const container = document.getElementById('question-container');
-
-                // Split text by [blank] and create inputs
                 const parts = question.text.split('[blank]');
-                let html = '<div class="question-text">';
 
+                let html = '<div class="question-text">';
                 parts.forEach((part, index) => {
                     html += part;
                     if (index < parts.length - 1) {
                         html += `<input type="text" class="blank-input" data-index="${index}">`;
                     }
                 });
-
                 html += '</div>';
+
                 container.innerHTML = html;
 
                 // Update progress
@@ -152,7 +206,7 @@
                     `${((this.currentQuestionIndex + 1) / this.questions.length) * 100}%`;
             }
 
-            async submitAnswer() {
+            submitAnswer() {
                 const question = this.questions[this.currentQuestionIndex];
                 const inputs = document.querySelectorAll('.blank-input');
                 let isCorrect = true;
@@ -175,7 +229,6 @@
                     document.getElementById('score').textContent = this.score;
                 }
 
-                // Move to next question after 1.5 seconds
                 setTimeout(() => {
                     this.currentQuestionIndex++;
                     if (this.currentQuestionIndex >= this.questions.length) {
@@ -188,41 +241,90 @@
 
             startTimer() {
                 const timerElement = document.getElementById('timer');
-                const timer = setInterval(() => {
+                this.timer = setInterval(() => {
                     this.timeLeft--;
                     const minutes = Math.floor(this.timeLeft / 60);
                     const seconds = this.timeLeft % 60;
                     timerElement.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
 
                     if (this.timeLeft <= 0) {
-                        clearInterval(timer);
+                        clearInterval(this.timer);
                         this.gameOver('Time\'s up!');
                     }
                 }, 1000);
             }
 
             gameOver(message = 'Game Complete!') {
-                document.querySelector('.question-card').innerHTML = `
-                    <div class="text-center">
-                        <h3>${message}</h3>
-                        <p class="h4 mb-4">Final Score: ${this.score}</p>
-                        <button class="btn btn-success" onclick="window.location.href='../play.html'">
-                            Play Again
-                        </button>
-                    </div>
-                `;
+                if (this.timer) {
+                    clearInterval(this.timer);
+                }
+
+                const timeBonus = this.calculateTimeBonus();
+                const finalScore = this.score + timeBonus;
+
+                // Update modal content
+                document.getElementById('completedLevel').textContent = this.level;
+                document.getElementById('modalScore').textContent = finalScore;
+                document.getElementById('modalCorrect').textContent = `${this.score / 10}/${this.questions.length}`;
+                document.getElementById('modalTimeBonus').textContent = `+${timeBonus}`;
+
+                // Configure next level button
+                const nextLevelBtn = document.getElementById('nextLevelBtn');
+                nextLevelBtn.onclick = () => {
+                    window.location.href = `fillblank-game.html?level=${this.level + 1}`;
+                };
+
+                // Show modal
+                this.modal.show();
+
+                // Save score
+                this.saveScore(finalScore);
+            }
+
+            calculateTimeBonus() {
+                return Math.max(0, Math.floor(this.timeLeft * (500 / 300)));
             }
 
             showError(message) {
                 document.querySelector('.question-card').innerHTML = `
                     <div class="alert alert-danger">
-                        ${message}. Please try again later.
+                        ${message}
+                        <br>
+                        <button class="btn btn-outline-danger mt-3" onclick="location.reload()">
+                            Try Again
+                        </button>
                     </div>
                 `;
             }
+
+            async saveScore(finalScore) {
+                try {
+                    const response = await fetch('../api/save_score.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            game_type: 'fill_blank',
+                            level: this.level,
+                            score: finalScore,
+                            time_taken: (Date.now() - this.startTime) / 1000
+                        })
+                    });
+                    const data = await response.json();
+                    if (!data.success) {
+                        console.error('Failed to save score:', data.message);
+                    }
+                } catch (error) {
+                    console.error('Error saving score:', error);
+                }
+            }
         }
 
-        const game = new FillBlankGame();
+        // Initialize game when DOM is ready
+        document.addEventListener('DOMContentLoaded', () => {
+            window.game = new FillBlankGame();
+        });
     </script>
 </body>
 
