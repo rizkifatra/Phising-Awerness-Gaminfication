@@ -220,7 +220,7 @@
             <button class="action-btn mb-2" onclick="window.location.href='manage.html'">
                 <i class="bi bi-person-gear me-2"></i>Edit Profile
             </button>
-            <button class="action-btn">
+            <button class="action-btn" id="logoutButton">
                 <i class="bi bi-box-arrow-right me-2"></i>Logout
             </button>
         </div>
@@ -232,6 +232,28 @@
         var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
             return new bootstrap.Tooltip(tooltipTriggerEl)
         })
+
+        // Add logout functionality
+        document.getElementById('logoutButton').addEventListener('click', async function () {
+            try {
+                const response = await fetch('api/logout.php', {
+                    method: 'POST',
+                    credentials: 'include'
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // Redirect to login page
+                    window.location.href = 'index.html';
+                } else {
+                    alert('Logout failed. Please try again.');
+                }
+            } catch (error) {
+                console.error('Logout error:', error);
+                alert('An error occurred during logout.');
+            }
+        });
     </script>
 </body>
 

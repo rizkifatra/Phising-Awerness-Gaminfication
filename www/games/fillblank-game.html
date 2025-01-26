@@ -7,6 +7,7 @@
     <title>Fill in the Blanks</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <style>
         .game-header {
             background: #28a745;
@@ -120,7 +121,6 @@
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         class FillBlankGame {
             constructor() {
@@ -129,53 +129,72 @@
                 this.questions = [];
                 this.score = 0;
                 this.timeLeft = 300;
-                this.timer = null;
-                this.startTime = Date.now();
 
-                // Initialize Bootstrap modal
-                this.modal = new bootstrap.Modal(document.getElementById('completionModal'));
-
-                // Set initial level display
                 document.getElementById('level-number').textContent = this.level;
 
-                // Load questions immediately
+                // Wait for Bootstrap to be loaded before initializing modal
+                if (typeof bootstrap !== 'undefined') {
+                    this.completionModal = new bootstrap.Modal(document.getElementById('completionModal'), {
+                        backdrop: 'static',
+                        keyboard: false
+                    });
+                } else {
+                    console.error('Bootstrap is not loaded');
+                }
+
+                // Remove this.initModal() call since we're initializing here
                 this.init();
+                this.startTimer();
             }
 
             async init() {
                 try {
                     await this.loadQuestions();
-                    if (this.questions.length > 0) {
-                        this.displayQuestion();
-                        this.startTimer();
-                    }
+                    this.displayQuestion();
                 } catch (error) {
-                    console.error('Initialization error:', error);
-                    this.showError('Failed to initialize game');
+                    console.error('Error:', error);
+                    this.showError(error.message);
                 }
             }
 
             async loadQuestions() {
                 try {
-                    const response = await fetch(`../api/get_fill_questions.php?level=${this.level}`);
-                    const data = await response.json();
+                    const url = `../api/get_fill_questions.php?level=${this.level}`;
+                    console.log('Fetching from:', url);
 
-                    // Debug logging
-                    console.log('API Response:', data);
+                    const response = await fetch(url);
+                    const responseText = await response.text();
+                    console.log('Raw response:', responseText);
+
+                    let data;
+                    try {
+                        data = JSON.parse(responseText);
+                    } catch (e) {
+                        console.error('JSON parse error:', e);
+                        console.log('Invalid JSON:', responseText);
+                        throw new Error('Server returned invalid JSON');
+                    }
+
+                    console.log('Parsed data:', data);
 
                     if (data.error) {
                         throw new Error(data.error);
                     }
 
-                    if (!Array.isArray(data) || data.length === 0) {
-                        throw new Error('No questions available');
+                    if (!Array.isArray(data)) {
+                        throw new Error('Expected array of questions');
+                    }
+
+                    if (data.length === 0) {
+                        throw new Error('No questions available for this level');
                     }
 
                     this.questions = data;
                     document.getElementById('total-questions').textContent = this.questions.length;
+                    console.log('Loaded questions:', this.questions);
                 } catch (error) {
-                    console.error('Load questions error:', error);
-                    throw error;
+                    console.error('Error loading questions:', error);
+                    this.showError(`Failed to load questions: ${error.message}`);
                 }
             }
 
@@ -186,18 +205,22 @@
                     return;
                 }
 
-                const container = document.getElementById('question-container');
-                const parts = question.text.split('[blank]');
+                console.log('Displaying question:', question); // Debug line
 
+                const container = document.getElementById('question-container');
+
+                // Split text by [blank] and create inputs
+                const parts = question.text.split('[blank]');
                 let html = '<div class="question-text">';
+
                 parts.forEach((part, index) => {
                     html += part;
                     if (index < parts.length - 1) {
-                        html += `<input type="text" class="blank-input" data-index="${index}">`;
+                        html += `<input type="text" class="blank-input" data-index="${index}" placeholder="Fill in...">`;
                     }
                 });
-                html += '</div>';
 
+                html += '</div>';
                 container.innerHTML = html;
 
                 // Update progress
@@ -206,7 +229,7 @@
                     `${((this.currentQuestionIndex + 1) / this.questions.length) * 100}%`;
             }
 
-            submitAnswer() {
+            async submitAnswer() {
                 const question = this.questions[this.currentQuestionIndex];
                 const inputs = document.querySelectorAll('.blank-input');
                 let isCorrect = true;
@@ -229,6 +252,7 @@
                     document.getElementById('score').textContent = this.score;
                 }
 
+                // Move to next question after 1.5 seconds
                 setTimeout(() => {
                     this.currentQuestionIndex++;
                     if (this.currentQuestionIndex >= this.questions.length) {
@@ -241,24 +265,20 @@
 
             startTimer() {
                 const timerElement = document.getElementById('timer');
-                this.timer = setInterval(() => {
+                const timer = setInterval(() => {
                     this.timeLeft--;
                     const minutes = Math.floor(this.timeLeft / 60);
                     const seconds = this.timeLeft % 60;
                     timerElement.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
 
                     if (this.timeLeft <= 0) {
-                        clearInterval(this.timer);
+                        clearInterval(timer);
                         this.gameOver('Time\'s up!');
                     }
                 }, 1000);
             }
 
             gameOver(message = 'Game Complete!') {
-                if (this.timer) {
-                    clearInterval(this.timer);
-                }
-
                 const timeBonus = this.calculateTimeBonus();
                 const finalScore = this.score + timeBonus;
 
@@ -271,59 +291,38 @@
                 // Configure next level button
                 const nextLevelBtn = document.getElementById('nextLevelBtn');
                 nextLevelBtn.onclick = () => {
-                    window.location.href = `fillblank-game.html?level=${this.level + 1}`;
+                    window.location.href = `fillblank-game.html?level=${parseInt(this.level) + 1}`;
                 };
 
                 // Show modal
-                this.modal.show();
+                this.completionModal.show();
 
                 // Save score
                 this.saveScore(finalScore);
             }
 
             calculateTimeBonus() {
-                return Math.max(0, Math.floor(this.timeLeft * (500 / 300)));
+                const maxBonus = 500;
+                const maxTime = 300;
+                const timeUsed = 300 - this.timeLeft;
+                return Math.max(0, Math.floor((maxTime - timeUsed) * (maxBonus / maxTime)));
             }
 
             showError(message) {
                 document.querySelector('.question-card').innerHTML = `
                     <div class="alert alert-danger">
-                        ${message}
-                        <br>
-                        <button class="btn btn-outline-danger mt-3" onclick="location.reload()">
-                            Try Again
-                        </button>
+                        ${message}. Please try again later.
                     </div>
                 `;
             }
-
-            async saveScore(finalScore) {
-                try {
-                    const response = await fetch('../api/save_score.php', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                            game_type: 'fill_blank',
-                            level: this.level,
-                            score: finalScore,
-                            time_taken: (Date.now() - this.startTime) / 1000
-                        })
-                    });
-                    const data = await response.json();
-                    if (!data.success) {
-                        console.error('Failed to save score:', data.message);
-                    }
-                } catch (error) {
-                    console.error('Error saving score:', error);
-                }
-            }
         }
 
-        // Initialize game when DOM is ready
-        document.addEventListener('DOMContentLoaded', () => {
-            window.game = new FillBlankGame();
+        // Make game instance globally available
+        let game;
+
+        // Initialize game after DOM and scripts are loaded
+        window.addEventListener('load', () => {
+            game = new FillBlankGame();
         });
     </script>
 </body>

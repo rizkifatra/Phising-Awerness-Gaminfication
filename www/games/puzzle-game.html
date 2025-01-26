@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Word Search Puzzle</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
     <style>
         .game-header {
             background: #28a745;
@@ -109,6 +110,52 @@
             border-radius: 8px;
             margin: 10px 0;
         }
+
+        /* Mobile Responsive Improvements */
+        @media (max-width: 480px) {
+            .puzzle-container {
+                margin: 1rem;
+                padding: 1rem;
+            }
+
+            .word-grid {
+                gap: 1px;
+            }
+
+            .letter-cell {
+                width: 32px;
+                height: 32px;
+                font-size: 14px;
+            }
+
+            .word-list {
+                grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+                gap: 0.5rem;
+            }
+
+            .word-item {
+                font-size: 14px;
+                padding: 0.4rem;
+            }
+        }
+
+        /* Game Progress Bar */
+        .progress {
+            height: 5px;
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .progress-bar {
+            transition: width 0.3s ease;
+        }
+
+        /* Score Display */
+        .score-display {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 14px;
+        }
     </style>
 </head>
 
@@ -119,15 +166,21 @@
                 <h4 class="mb-0">Word Search - Level <span id="level">1</span></h4>
                 <small class="text-light" id="category"></small>
             </div>
-            <div class="d-flex align-items-center">
-                <span class="me-4">Found: <span id="found-count">0</span>/<span id="total-words">0</span></span>
-                <span class="me-4"><i class="bi bi-clock"></i> <span id="timer">00:00</span></span>
+            <div class="d-flex align-items-center gap-3">
+                <span class="score-display">
+                    <i class="bi bi-star-fill text-warning"></i>
+                    Score: <span id="current-score">0</span>
+                </span>
+                <span class="score-display">
+                    <i class="bi bi-clock"></i>
+                    <span id="timer">5:00</span>
+                </span>
                 <a href="../play.html" class="btn btn-outline-light btn-sm">
-                    <i class="bi bi-x-lg"></i> Exit
+                    <i class="bi bi-x-lg"></i>
                 </a>
             </div>
         </div>
-        <div class="progress mt-2" style="height: 5px;">
+        <div class="progress mt-2">
             <div id="progress" class="progress-bar bg-warning" style="width: 0%"></div>
         </div>
     </div>
@@ -204,6 +257,8 @@
                 this.startTime = Date.now();
                 this.score = 0;
                 this.basePoints = 100; // Base points per word
+                this.timeLeft = 300; // 5 minutes
+                this.baseScore = 0;
                 this.init();
             }
 
@@ -213,6 +268,7 @@
                 this.renderWordList();
                 this.setupEventListeners();
                 this.startTimer();
+                this.updateProgressBar();
             }
 
             async loadPuzzle() {
@@ -334,17 +390,22 @@
 
                 if (this.words.includes(word) || this.words.includes(reversedWord)) {
                     const foundWord = this.words.includes(word) ? word : reversedWord;
-                    this.foundWords.add(foundWord);
-                    this.selectedCells.forEach(cell => {
-                        cell.classList.remove('dragging');
-                        cell.classList.add('found');
-                    });
-                    document.getElementById('found-count').textContent = this.foundWords.size;
-                    this.renderWordList();
-                    this.updateScore(); // Update score when word is found
+                    if (!this.foundWords.has(foundWord)) {  // Check if word wasn't already found
+                        this.foundWords.add(foundWord);
+                        this.selectedCells.forEach(cell => {
+                            cell.classList.remove('dragging');
+                            cell.classList.add('found');
+                        });
 
-                    if (this.foundWords.size === this.words.length) {
-                        this.gameWon();
+                        // Update UI
+                        this.updateScore();
+                        this.updateProgressBar();
+                        this.renderWordList();
+
+                        // Check if all words are found
+                        if (this.foundWords.size === this.words.length) {
+                            setTimeout(() => this.gameWon(), 500); // Small delay for better UX
+                        }
                     }
                 }
 
@@ -394,13 +455,17 @@
             }
 
             startTimer() {
-                const startTime = Date.now();
-                setInterval(() => {
-                    const elapsed = Math.floor((Date.now() - startTime) / 1000);
-                    const minutes = Math.floor(elapsed / 60);
-                    const seconds = elapsed % 60;
+                const timer = setInterval(() => {
+                    this.timeLeft--;
+                    const minutes = Math.floor(this.timeLeft / 60);
+                    const seconds = this.timeLeft % 60;
                     document.getElementById('timer').textContent =
-                        `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                        `${minutes}:${seconds.toString().padStart(2, '0')}`;
+
+                    if (this.timeLeft <= 0) {
+                        clearInterval(timer);
+                        this.gameOver('Time\'s up!');
+                    }
                 }, 1000);
             }
 
@@ -425,35 +490,17 @@
                 };
             }
 
+            updateProgressBar() {
+                const progress = (this.foundWords.size / this.words.length) * 100;
+                document.getElementById('progress').style.width = `${progress}%`;
+            }
+
             updateScore() {
-                const scores = this.calculateScore();
-                document.getElementById('current-score').textContent = scores.totalScore;
+                this.baseScore += 10 * this.level; // Points per word increases with level
+                document.getElementById('current-score').textContent = this.baseScore;
             }
 
-            gameWon() {
-                const scores = this.calculateScore();
-                const timeLeft = Math.max(0, 300 - (Date.now() - this.startTime) / 1000).toFixed(1);
-
-                // Update modal content with detailed scoring
-                document.getElementById('completedLevel').textContent = this.level;
-                document.getElementById('modalScore').textContent = scores.totalScore;
-                document.getElementById('modalWordsFound').textContent = `${this.foundWords.size}/${this.words.length}`;
-                document.getElementById('modalTimeBonus').textContent = `+${scores.timeBonus}`;
-
-                // Configure next level button
-                const nextLevelBtn = document.getElementById('nextLevelBtn');
-                nextLevelBtn.onclick = () => {
-                    window.location.href = `puzzle-game.html?level=${parseInt(this.level) + 1}`;
-                };
-
-                // Show modal using Bootstrap
-                completionModal.show();
-
-                // Save the total score
-                this.saveScore(scores.totalScore);
-            }
-
-            async saveScore(score) {
+            async saveScore(finalScore) {
                 try {
                     const response = await fetch('../api/save_score.php', {
                         method: 'POST',
@@ -463,10 +510,12 @@
                         body: JSON.stringify({
                             game_type: 'word_puzzle',
                             level: this.level,
-                            score: score,
-                            time_taken: (Date.now() - this.startTime) / 1000
-                        })
+                            score: finalScore,
+                            time_taken: Math.floor((Date.now() - this.startTime) / 1000)
+                        }),
+                        credentials: 'include' // Important: include credentials for session
                     });
+
                     const data = await response.json();
                     if (!data.success) {
                         console.error('Failed to save score:', data.message);
@@ -474,6 +523,24 @@
                 } catch (error) {
                     console.error('Error saving score:', error);
                 }
+            }
+
+            gameWon() {
+                const timeBonus = Math.floor(this.timeLeft * 2);
+                const finalScore = this.baseScore + timeBonus;
+
+                // Update modal content
+                document.getElementById('completedLevel').textContent = this.level;
+                document.getElementById('modalScore').textContent = finalScore;
+                document.getElementById('modalTimeBonus').textContent = `+${timeBonus}`;
+                document.getElementById('modalWordsFound').textContent =
+                    `${this.foundWords.size}/${this.words.length}`;
+
+                // Save score before showing modal
+                this.saveScore(finalScore).then(() => {
+                    // Show completion modal
+                    completionModal.show();
+                });
             }
         }
 

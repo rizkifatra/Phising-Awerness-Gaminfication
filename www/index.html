@@ -68,6 +68,7 @@
         color: #6c757d;
         /* Muted text */
         margin-bottom: 20px;
+        text-align: center;
     }
 
     /* Login Form Styles */
@@ -104,8 +105,8 @@
     }
 
     .input-group input:focus {
-        border-color: #007bff;
-        /* Blue border on focus */
+        border-color: #28a745;
+        /* Green border on focus */
         outline: none;
         background-color: #f1f9ff;
         /* Light blue background */
@@ -125,16 +126,16 @@
         border: none;
         font-size: 16px;
         cursor: pointer;
-        color: #007bff;
-        /* Blue toggle button */
+        color: #28a745;
+        /* Green toggle button */
     }
 
     /* Forgot Password Link */
     .forgot-password {
         text-align: right;
         font-size: 14px;
-        color: #007bff;
-        /* Blue text */
+        color: #28a745;
+        /* Green text */
         text-decoration: none;
         margin-bottom: 20px;
     }
@@ -148,7 +149,7 @@
         width: 100%;
         padding: 12px;
         background-color: #28a745;
-        /* Blue background */
+        /* Green background */
         color: #ffffff;
         /* White text */
         border: none;
@@ -161,7 +162,7 @@
 
     .login-button:hover {
         background-color: #218838;
-        /* Darker blue on hover */
+        /* Darker green on hover */
     }
 
     /* Divider Styles */
@@ -244,14 +245,58 @@
     }
 
     .signup-link {
-        color: #007bff;
-        /* Blue text */
+        color: #28a745;
+        /* Green text */
         text-decoration: none;
         font-weight: 600;
     }
 
     .signup-link:hover {
         text-decoration: underline;
+    }
+
+    /* Updated mobile styles */
+    @media (max-width: 480px) {
+        body {
+            background-color: #ffffff;
+        }
+
+        .login-card {
+            max-width: 100%;
+            margin: 0;
+            padding: 25px 20px;
+            border-radius: 0;
+            box-shadow: none;
+            min-height: 100vh;
+        }
+
+        .title {
+            font-size: 24px;
+            margin-top: 40px;
+        }
+
+        .input-group input {
+            padding: 15px;
+            font-size: 16px;
+            background-color: #f8f9fa;
+            border: 1px solid #e0e0e0;
+            margin-bottom: 15px;
+        }
+
+        .login-button {
+            padding: 16px;
+            font-size: 16px;
+            margin-top: 20px;
+        }
+
+        .social-button {
+            padding: 16px;
+            margin-top: 15px;
+        }
+
+        .divider {
+            margin: 30px 0;
+        }
     }
 </style>
 
@@ -274,45 +319,60 @@
                     <button type="button" class="toggle-password">👁️</button>
                 </div>
             </div>
-            <a href="#" class="forgot-password">Forgot Password?</a>
+
+
+            <a href="forgot-password.html" class="forgot-password">Forgot Password?</a>
             <button type="submit" class="login-button">Log In</button>
         </form>
         <div class="divider">
             <span>Or</span>
         </div>
         <button class="social-button google">Continue with Google</button>
-        <p class="signup-text">Don’t have an account? <a href="#" class="signup-link">Sign Up</a></p>
+        <p class="signup-text">Don’t have an account? <a href="register.html" class="signup-link">Sign Up</a></p>
     </div>
 </body>
 
 <script>
-    document.getElementById("loginButton").addEventListener("click", async () => {
-        const email = document.getElementById("login-email").value;
-        const password = document.getElementById("login-password").value;
+    document.querySelector('.login-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
 
-        if (!email || !password) {
-            document.getElementById("login-error-message").textContent =
-                "Please fill in all fields.";
-            return;
-        }
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
 
         try {
-            const response = await fetch("http://localhost:8080/api/login", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
+            const response = await fetch('api/login.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
                 body: JSON.stringify({ email, password }),
+                credentials: 'include'
             });
 
-            if (response.ok) {
-                alert("Login successful!");
+            const data = await response.json();
+            console.log('Login response:', data); // Debug line
+
+            if (data.success) {
+                window.location.href = 'home.html';
             } else {
-                document.getElementById("login-error-message").textContent =
-                    "Invalid credentials.";
+                // Show more detailed error message
+                alert(`Login failed: ${data.message}\n\nPlease check your email and password.`);
             }
         } catch (error) {
-            console.error(error);
-            document.getElementById("login-error-message").textContent =
-                "An error occurred.";
+            console.error('Login error:', error);
+            alert('An error occurred during login. Please try again.');
+        }
+    });
+
+    // Password visibility toggle
+    document.querySelector('.toggle-password').addEventListener('click', function () {
+        const passwordInput = document.getElementById('password');
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            this.textContent = '👁️';
+        } else {
+            passwordInput.type = 'password';
+            this.textContent = '👁️';
         }
     });
 

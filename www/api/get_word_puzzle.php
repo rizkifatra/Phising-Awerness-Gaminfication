@@ -52,6 +52,9 @@ try {
 
     $level = isset($_GET['level']) ? (int)$_GET['level'] : 1;
     
+    // Add debug logging
+    error_log("Fetching word puzzle for level: " . $level);
+    
     // Test query to check if table exists
     try {
         $test = $db->query("SHOW TABLES LIKE 'word_search_puzzles'");
@@ -62,27 +65,35 @@ try {
         throw new Exception('Database structure error: ' . $e->getMessage());
     }
     
-    // Debug query
     $stmt = $db->prepare("SELECT * FROM word_search_puzzles WHERE level = ?");
-    $stmt->execute([$level]);
-    
+    if (!$stmt) {
+        error_log("Prepare failed: " . print_r($db->errorInfo(), true));
+        throw new Exception('Database query preparation failed');
+    }
+
+    $success = $stmt->execute([$level]);
+    if (!$success) {
+        error_log("Execute failed: " . print_r($stmt->errorInfo(), true));
+        throw new Exception('Failed to execute query');
+    }
+
     $puzzle = $stmt->fetch(PDO::FETCH_ASSOC);
-    
+    error_log("Raw puzzle data: " . print_r($puzzle, true));
+
     if (!$puzzle) {
-        // Provide default puzzle if none found
-        $defaultPuzzle = [
+        // Return sample puzzle with proper structure
+        $samplePuzzle = [
             'category' => 'Programming',
-            'words' => ['PHP', 'HTML', 'CSS', 'SQL'],
-            'grid' => array_fill(0, 10, array_fill(0, 10, '')),
+            'words' => ['PHP', 'HTML', 'CSS', 'JAVASCRIPT'],
+            'grid' => generateGrid(['PHP', 'HTML', 'CSS', 'JAVASCRIPT']),
             'answers' => [
                 ['word' => 'PHP', 'row' => 0, 'col' => 0, 'direction' => 'horizontal'],
                 ['word' => 'HTML', 'row' => 1, 'col' => 0, 'direction' => 'horizontal'],
                 ['word' => 'CSS', 'row' => 2, 'col' => 0, 'direction' => 'horizontal'],
-                ['word' => 'SQL', 'row' => 3, 'col' => 0, 'direction' => 'horizontal']
+                ['word' => 'JAVASCRIPT', 'row' => 3, 'col' => 0, 'direction' => 'horizontal']
             ]
         ];
-        
-        echo json_encode($defaultPuzzle);
+        echo json_encode($samplePuzzle);
         exit;
     }
     
