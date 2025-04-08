@@ -11,7 +11,7 @@
         .game-header {
             background: #28a745;
             color: white;
-            padding: 1rem;
+            padding: 1.25rem 1rem;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
 
@@ -34,6 +34,7 @@
             align-items: center;
             justify-content: center;
             border: 2px solid #28a745;
+            padding: 0.25rem;
         }
 
         .top-avatar {
@@ -44,9 +45,10 @@
         }
 
         .list-item {
-            padding: 1rem;
+            padding: 1.25rem 1rem;
             border-bottom: 1px solid rgba(40, 167, 69, 0.1);
             transition: all 0.3s ease;
+            margin: 0.5rem 0;
         }
 
         .list-item:hover {
@@ -56,30 +58,133 @@
         .game-container {
             background: white;
             border-radius: 15px;
-            padding: 2rem;
+            padding: 2rem 1.75rem;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            margin: 0.5rem 0.25rem;
         }
 
         .search-box {
-            border-radius: 20px;
-            padding-left: 2.5rem;
-            border: 2px solid rgba(40, 167, 69, 0.2);
-        }
-
-        .search-box:focus {
-            border-color: #28a745;
-            box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+            display: none;
+            /* Hide any existing search boxes */
         }
 
         .player-card {
             background: rgba(255, 255, 255, 0.1);
             border-radius: 12px;
-            padding: 1rem;
+            padding: 1.5rem 1rem;
             transition: all 0.3s ease;
+            margin-bottom: 1.5rem;
+            text-align: center;
         }
 
         .player-card:hover {
             transform: translateY(-3px);
+        }
+
+        .loading-spinner {
+            display: flex;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        /* Mobile responsiveness improvements */
+        @media (max-width: 767px) {
+            .game-container {
+                padding: 1.5rem 1rem;
+                margin: 0.25rem;
+                border-radius: 10px;
+            }
+
+            .top-avatar {
+                width: 55px;
+                height: 55px;
+            }
+
+            .list-item {
+                padding: 1rem 0.75rem;
+                margin: 0.25rem 0;
+            }
+
+            .player-name {
+                font-size: 0.9rem;
+                max-width: 100px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+
+            .points {
+                font-size: 0.9rem;
+            }
+
+            .rank {
+                min-width: 20px;
+                text-align: center;
+            }
+
+            .game-header h4 {
+                font-size: 1.2rem;
+            }
+
+            .container {
+                padding-left: 10px;
+                padding-right: 10px;
+            }
+        }
+
+        @media (max-width: 575px) {
+            .top-players .row {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .top-players .player-card {
+                width: 90%;
+                margin-bottom: 1rem;
+            }
+
+            .container.py-4 {
+                padding-top: 1rem !important;
+                padding-bottom: 1rem !important;
+            }
+
+            .game-container {
+                padding: 1.25rem 0.75rem;
+            }
+
+            .player-card {
+                padding: 1.25rem 0.75rem;
+            }
+
+            .badge {
+                font-size: 0.7rem;
+            }
+        }
+
+        /* Extra small devices */
+        @media (max-width: 375px) {
+            .player-name {
+                max-width: 80px;
+            }
+
+            .avatar {
+                width: 35px;
+                height: 35px;
+            }
+
+            .top-avatar {
+                width: 50px;
+                height: 50px;
+            }
+
+            .list-item {
+                padding: 0.75rem 0.5rem;
+            }
+
+            .game-container {
+                padding: 1rem 0.5rem;
+            }
         }
     </style>
 </head>
@@ -87,88 +192,157 @@
 <body class="bg-light">
     <!-- Header -->
     <div class="game-header">
-        <div class="container d-flex justify-content-between align-items-center">
+        <div class="container d-flex justify-content-between align-items-center px-4">
             <h4 class="mb-0">
                 <i class="bi bi-trophy-fill"></i> Leaderboard
             </h4>
-            <a href="home.html" class="btn btn-outline-light">
+            <a href="home.html" class="btn btn-outline-light px-3">
                 <i class="bi bi-house-fill"></i>
             </a>
         </div>
     </div>
-    <div class="container py-4">
-        <!-- Search Bar -->
-        <div class="position-relative mb-4">
-            <i class="bi bi-search position-absolute"
-                style="left: 1rem; top: 50%; transform: translateY(-50%); color: #28a745;"></i>
-            <input type="text" class="form-control search-box" placeholder="Search players...">
-        </div>
+    <div class="container py-4 px-3">
+        <!-- Search Bar - REMOVED -->
 
         <!-- Game Container -->
         <div class="game-container">
+            <!-- Loading Spinner -->
+            <div id="loadingSpinner" class="loading-spinner">
+                <div class="spinner-border text-success" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+
             <!-- Top 3 Players -->
-            <div class="top-players mb-4">
-                <div class="row align-items-center">
-                    <!-- 2nd Place -->
-                    <div class="col-4 player-card">
-                        <div class="avatar top-avatar mb-2">
-                            <i class="bi bi-person-fill text-success h1 mb-0"></i>
-                        </div>
-                        <h5 class="mb-1">Player 2</h5>
-                        <div class="h6 text-success">895 Pts</div>
-                        <div class="badge bg-success">2nd Place</div>
-                    </div>
-
-                    <!-- 1st Place -->
-                    <div class="col-4 player-card">
-                        <div class="avatar top-avatar mb-2" style="border-color: #ffd700;">
-                            <i class="bi bi-person-fill text-success h1 mb-0"></i>
-                        </div>
-                        <h5 class="mb-1">Player 1</h5>
-                        <div class="h6 text-success">1024 Pts</div>
-                        <div class="badge bg-warning">1st Place</div>
-                    </div>
-
-                    <!-- 3rd Place -->
-                    <div class="col-4 player-card">
-                        <div class="avatar top-avatar mb-2" style="border-color: #cd7f32;">
-                            <i class="bi bi-person-fill text-success h1 mb-0"></i>
-                        </div>
-                        <h5 class="mb-1">Player 3</h5>
-                        <div class="h6 text-success">754 Pts</div>
-                        <div class="badge bg-success">3rd Place</div>
-                    </div>
+            <div id="topPlayers" class="top-players mb-4" style="display: none;">
+                <div class="row justify-content-center">
+                    <!-- Players will be dynamically inserted here -->
                 </div>
             </div>
 
             <!-- Leaderboard List -->
-            <div class="list">
-                <div class="list-item d-flex align-items-center">
-                    <span class="rank me-3 text-success">4</span>
-                    <div class="d-flex align-items-center flex-grow-1">
-                        <div class="avatar me-3">
-                            <i class="bi bi-person-fill text-success"></i>
-                        </div>
-                        <span>Username</span>
-                    </div>
-                    <span class="points text-success">650 Pts</span>
-                </div>
-
-                <div class="list-item d-flex align-items-center">
-                    <span class="rank me-3 text-success">5</span>
-                    <div class="d-flex align-items-center flex-grow-1">
-                        <div class="avatar me-3">
-                            <i class="bi bi-person-fill text-success"></i>
-                        </div>
-                        <span>Username</span>
-                    </div>
-                    <span class="points text-success">545 Pts</span>
-                </div>
+            <div id="playersList" class="list" style="display: none;">
+                <!-- Players will be dynamically inserted here -->
             </div>
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Fetch leaderboard data
+            fetch('api/get_leaderboard.php')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        displayLeaderboard(data.leaderboard);
+                    } else {
+                        console.error('Error fetching leaderboard:', data.message);
+                        alert('Failed to load leaderboard data');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while loading the leaderboard');
+                })
+                .finally(() => {
+                    document.getElementById('loadingSpinner').style.display = 'none';
+                });
+
+            // Search functionality - REMOVED
+        });
+
+        // Function to simplify names (extract first word only)
+        function simplifyName(fullName) {
+            if (!fullName) return '';
+            const nameParts = fullName.trim().split(' ');
+            // Return the first part of the name
+            return nameParts[0];
+        }
+
+        function displayLeaderboard(players) {
+            const topPlayersDiv = document.getElementById('topPlayers');
+            const playersListDiv = document.getElementById('playersList');
+
+            // Clear previous data
+            topPlayersDiv.querySelector('.row').innerHTML = '';
+            playersListDiv.innerHTML = '';
+
+            // Display top 3 players
+            if (players.length > 0) {
+                let topPlayersHTML = '';
+
+                // Display positions in this order: 2nd, 1st, 3rd
+                const positions = [1, 0, 2];
+                positions.forEach(index => {
+                    if (players[index]) {
+                        const player = players[index];
+                        const rank = player.rank;
+                        let borderColor = '';
+                        let badgeClass = 'bg-success';
+
+                        if (rank === 1) {
+                            borderColor = 'style="border-color: #ffd700;"';
+                            badgeClass = 'bg-warning';
+                        } else if (rank === 3) {
+                            borderColor = 'style="border-color: #cd7f32;"';
+                        }
+
+                        // Store both full name and simplified name
+                        const simpleName = simplifyName(player.username);
+
+                        topPlayersHTML += `
+                            <div class="col-sm-4 col-10 player-card player-item">
+                                <div class="avatar top-avatar mb-2" ${borderColor}>
+                                    <i class="bi bi-person-fill text-success h1 mb-0"></i>
+                                </div>
+                                <h5 class="mb-1 player-name text-truncate" title="${player.username}">${simpleName}</h5>
+                                <div class="h6 text-success">${player.score} Pts</div>
+                                <div class="badge ${badgeClass}">${rank}${getRankSuffix(rank)} Place</div>
+                            </div>
+                        `;
+                    }
+                });
+
+                topPlayersDiv.querySelector('.row').innerHTML = topPlayersHTML;
+                topPlayersDiv.style.display = 'block';
+
+                // Display remaining players
+                let listHTML = '';
+                for (let i = 3; i < players.length; i++) {
+                    const player = players[i];
+                    // Store both full name and simplified name
+                    const simpleName = simplifyName(player.username);
+
+                    listHTML += `
+                        <div class="list-item d-flex align-items-center player-item">
+                            <span class="rank me-2 me-sm-3 text-success">${player.rank}</span>
+                            <div class="d-flex align-items-center flex-grow-1">
+                                <div class="avatar me-2 me-sm-3">
+                                    <i class="bi bi-person-fill text-success"></i>
+                                </div>
+                                <span class="player-name" title="${player.username}">${simpleName}</span>
+                            </div>
+                            <span class="points text-success ms-auto">${player.score} Pts</span>
+                        </div>
+                    `;
+                }
+
+                playersListDiv.innerHTML = listHTML;
+                playersListDiv.style.display = 'block';
+            } else {
+                playersListDiv.innerHTML = '<div class="text-center p-4">No leaderboard data available</div>';
+                playersListDiv.style.display = 'block';
+            }
+        }
+
+        function getRankSuffix(rank) {
+            if (rank === 1) return 'st';
+            if (rank === 2) return 'nd';
+            if (rank === 3) return 'rd';
+            return 'th';
+        }
+    </script>
 </body>
 
 </html>

@@ -311,6 +311,13 @@
 
             async saveScore(finalScore) {
                 try {
+                    console.log('Saving score:', {
+                        game_type: 'mcq',
+                        level: this.level,
+                        score: finalScore,
+                        time_taken: 300 - timeLeft
+                    });
+
                     const response = await fetch('../api/save_score.php', {
                         method: 'POST',
                         headers: {
@@ -320,12 +327,33 @@
                             game_type: 'mcq',
                             level: this.level,
                             score: finalScore,
-                            time_taken: 300 - timeLeft // Calculate time taken from remaining time
+                            time_taken: 300 - timeLeft
                         })
                     });
+
                     const data = await response.json();
+                    console.log('Save score response:', data);
+
                     if (!data.success) {
                         console.error('Failed to save score:', data.message);
+                    } else {
+                        // Show save status to the user
+                        const scoreStatusMsg = data.message === 'Score updated successfully' ?
+                            'New High Score!' :
+                            data.message === 'Existing score is higher' ?
+                                'Your previous score was higher!' :
+                                'Score saved!';
+
+                        // Add score status to the modal
+                        const scoreDetail = document.querySelector('.score-detail');
+                        const statusRow = document.createElement('div');
+                        statusRow.className = 'row mt-3';
+                        statusRow.innerHTML = `
+                            <div class="col-12 text-center ${data.message === 'Score updated successfully' ? 'text-success fw-bold' : ''}">
+                                ${scoreStatusMsg}
+                            </div>
+                        `;
+                        scoreDetail.appendChild(statusRow);
                     }
                 } catch (error) {
                     console.error('Error saving score:', error);

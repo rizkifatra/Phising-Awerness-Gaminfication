@@ -34,6 +34,7 @@ try {
         $_SESSION['name'] = $user['name'];
         $_SESSION['email'] = $user['email'];
         $_SESSION['score'] = $user['score'] ?? 0;
+        $_SESSION['high_score'] = $user['high_score'];
 
         echo json_encode([
             'success' => true,
@@ -42,7 +43,8 @@ try {
                 'id' => $user['id'],
                 'name' => $user['name'],
                 'email' => $user['email'],
-                'score' => $user['score'] ?? 0
+                'score' => $user['score'] ?? 0,
+                'high_score' => $user['high_score']
             ]
         ]);
     } else {

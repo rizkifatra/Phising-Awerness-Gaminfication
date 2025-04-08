@@ -277,10 +277,23 @@
                     const data = await response.json();
                     this.grid = data.grid;
                     this.words = data.words;
-                    document.getElementById('total-words').textContent = this.words.length;
-                    document.getElementById('category').textContent = data.category;
+                    // Remove the reference to non-existent element
+                    // document.getElementById('total-words').textContent = this.words.length;
+
+                    // Only set category if it exists in the response
+                    if (data.category) {
+                        document.getElementById('category').textContent = data.category;
+                    }
                 } catch (error) {
                     console.error('Failed to load puzzle:', error);
+                    // Show a user-friendly error message
+                    const gridElement = document.getElementById('word-grid');
+                    gridElement.innerHTML = `
+                        <div class="alert alert-danger w-100 text-center">
+                            <p>Failed to load puzzle for level ${this.level}</p>
+                            <p>Please try again or choose another level</p>
+                        </div>
+                    `;
                 }
             }
 
@@ -502,6 +515,13 @@
 
             async saveScore(finalScore) {
                 try {
+                    console.log('Saving score:', {
+                        game_type: 'word_puzzle',
+                        level: this.level,
+                        score: finalScore,
+                        time_taken: Math.floor((Date.now() - this.startTime) / 1000)
+                    });
+
                     const response = await fetch('../api/save_score.php', {
                         method: 'POST',
                         headers: {
@@ -517,8 +537,28 @@
                     });
 
                     const data = await response.json();
+                    console.log('Save score response:', data);
+
                     if (!data.success) {
                         console.error('Failed to save score:', data.message);
+                    } else {
+                        // Show save status to the user
+                        const scoreStatusMsg = data.message === 'Score updated successfully' ?
+                            'New High Score!' :
+                            data.message === 'Existing score is higher' ?
+                                'Your previous score was higher!' :
+                                'Score saved!';
+
+                        // Add score status to the modal
+                        const scoreDetail = document.querySelector('.score-detail');
+                        const statusRow = document.createElement('div');
+                        statusRow.className = 'row mt-3';
+                        statusRow.innerHTML = `
+                            <div class="col-12 text-center ${data.message === 'Score updated successfully' ? 'text-success fw-bold' : ''}">
+                                ${scoreStatusMsg}
+                            </div>
+                        `;
+                        scoreDetail.appendChild(statusRow);
                     }
                 } catch (error) {
                     console.error('Error saving score:', error);
@@ -535,6 +575,12 @@
                 document.getElementById('modalTimeBonus').textContent = `+${timeBonus}`;
                 document.getElementById('modalWordsFound').textContent =
                     `${this.foundWords.size}/${this.words.length}`;
+
+                // Configure next level button
+                const nextLevelBtn = document.getElementById('nextLevelBtn');
+                nextLevelBtn.onclick = () => {
+                    window.location.href = `puzzle-game.html?level=${parseInt(this.level) + 1}`;
+                };
 
                 // Save score before showing modal
                 this.saveScore(finalScore).then(() => {

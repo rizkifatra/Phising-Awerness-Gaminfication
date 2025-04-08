@@ -229,18 +229,30 @@
                     `${((this.currentQuestionIndex + 1) / this.questions.length) * 100}%`;
             }
 
-            async submitAnswer() {
+            submitAnswer() {
                 const question = this.questions[this.currentQuestionIndex];
+                if (!question || !question.answers) {
+                    console.error('Question or answers not found:', question);
+                    return;
+                }
+
                 const inputs = document.querySelectorAll('.blank-input');
                 let isCorrect = true;
 
                 inputs.forEach((input, index) => {
                     const userAnswer = input.value.trim().toLowerCase();
-                    const correctAnswer = question.answers[index].toLowerCase();
+                    // Check if answer exists at this index
+                    if (question.answers[index]) {
+                        const correctAnswer = question.answers[index].toLowerCase();
 
-                    if (userAnswer === correctAnswer) {
-                        input.classList.add('correct-answer');
+                        if (userAnswer === correctAnswer) {
+                            input.classList.add('correct-answer');
+                        } else {
+                            input.classList.add('wrong-answer');
+                            isCorrect = false;
+                        }
                     } else {
+                        console.error(`No answer found at index ${index} for question:`, question);
                         input.classList.add('wrong-answer');
                         isCorrect = false;
                     }
@@ -306,6 +318,57 @@
                 const maxTime = 300;
                 const timeUsed = 300 - this.timeLeft;
                 return Math.max(0, Math.floor((maxTime - timeUsed) * (maxBonus / maxTime)));
+            }
+
+            async saveScore(finalScore) {
+                try {
+                    console.log('Saving score:', {
+                        game_type: 'fillblank',
+                        level: this.level,
+                        score: finalScore,
+                        time_taken: 300 - this.timeLeft
+                    });
+
+                    const response = await fetch('../api/save_score.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            game_type: 'fillblank',
+                            level: this.level,
+                            score: finalScore,
+                            time_taken: 300 - this.timeLeft
+                        })
+                    });
+
+                    const data = await response.json();
+                    console.log('Save score response:', data);
+
+                    if (!data.success) {
+                        console.error('Failed to save score:', data.message);
+                    } else {
+                        // Show save status to the user
+                        const scoreStatusMsg = data.message === 'Score updated successfully' ?
+                            'New High Score!' :
+                            data.message === 'Existing score is higher' ?
+                                'Your previous score was higher!' :
+                                'Score saved!';
+
+                        // Add score status to the modal
+                        const scoreDetail = document.querySelector('.score-detail');
+                        const statusRow = document.createElement('div');
+                        statusRow.className = 'row mt-3';
+                        statusRow.innerHTML = `
+                            <div class="col-12 text-center ${data.message === 'Score updated successfully' ? 'text-success fw-bold' : ''}">
+                                ${scoreStatusMsg}
+                            </div>
+                        `;
+                        scoreDetail.appendChild(statusRow);
+                    }
+                } catch (error) {
+                    console.error('Error saving score:', error);
+                }
             }
 
             showError(message) {
