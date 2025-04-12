@@ -8,34 +8,69 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
     <style>
+        html,
+        body {
+            font-size: 16px;
+            overscroll-behavior-y: none;
+            width: 100%;
+            height: 100%;
+            overflow-x: hidden;
+        }
+
+        /* Fluid typography that scales with viewport width */
+        :root {
+            --main-font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+            --header-font-size: clamp(1rem, 3vw, 1.3rem);
+            --item-font-size: clamp(0.85rem, 2.5vw, 1rem);
+        }
+
         .game-header {
             background: #28a745;
-            background: #28a745;
             color: white;
-            padding: 1rem;
+            padding: 0.75rem;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            height: 65px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+        }
+
+        .game-header h4 {
+            font-size: var(--header-font-size);
+            font-weight: 600;
+            margin-bottom: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 50vw;
         }
 
         .puzzle-container {
-            max-width: 800px;
-            margin: 2rem auto;
-            padding: 2rem;
+            max-width: 850px;
+            margin: 0.5rem auto;
+            padding: max(10px, 3vw);
             background: white;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         }
 
+        /* Grid cells that scale with screen size */
         .word-grid {
             display: grid;
             grid-template-columns: repeat(10, 1fr);
-            gap: 2px;
-            margin: 2rem 0;
+            gap: 1px;
+            margin: 0.75rem 0;
+            justify-content: center;
         }
 
         .letter-cell {
-            width: 40px;
-            height: 40px;
-            border: 1px solid #28a745;
+            width: calc(min(35px, 9vw));
+            height: calc(min(35px, 9vw));
+            border: 2px solid #28a745;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -43,6 +78,7 @@
             cursor: pointer;
             user-select: none;
             transition: background-color 0.2s;
+            font-size: calc(min(1rem, 5vw));
         }
 
         .letter-cell.selected {
@@ -62,27 +98,26 @@
 
         .word-list {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-            gap: 1rem;
-            margin-top: 2rem;
+            grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+            gap: 0.4rem;
+            margin-top: 0.75rem;
         }
 
         .word-item {
             padding: 0.5rem;
             text-align: center;
-            border: 1px solid #28a745;
-            border-radius: 4px;
+            border: 2px solid #28a745;
+            border-radius: 6px;
+            font-size: var(--item-font-size);
+            min-height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .word-item.found {
             background: #d4edda;
             text-decoration: line-through;
-        }
-
-        .drag-selection {
-            position: absolute;
-            background: rgba(40, 167, 69, 0.2);
-            pointer-events: none;
         }
 
         .selection-line {
@@ -99,8 +134,20 @@
             background-color: rgba(40, 167, 69, 0.1);
         }
 
+        .modal-content {
+            border-radius: 12px;
+        }
+
+        .modal-header {
+            padding: 0.75rem 1rem;
+        }
+
+        .modal-body {
+            padding: 1rem;
+        }
+
         .trophy-icon {
-            font-size: 48px;
+            font-size: 40px;
             color: #ffc107;
         }
 
@@ -108,45 +155,18 @@
             background: #f8f9fa;
             padding: 10px;
             border-radius: 8px;
-            margin: 10px 0;
+            margin: 8px 0;
+            font-size: calc(var(--main-font-size) - 0.15rem);
         }
 
-        /* Mobile Responsive Improvements */
-        @media (max-width: 480px) {
-            .puzzle-container {
-                margin: 1rem;
-                padding: 1rem;
-            }
-
-            .word-grid {
-                gap: 1px;
-            }
-
-            .letter-cell {
-                width: 32px;
-                height: 32px;
-                font-size: 14px;
-            }
-
-            .word-list {
-                grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-                gap: 0.5rem;
-            }
-
-            .word-item {
-                font-size: 14px;
-                padding: 0.4rem;
-            }
-        }
-
-        /* Game Progress Bar */
-        .progress {
-            height: 5px;
-            background-color: rgba(255, 255, 255, 0.2);
-        }
-
-        .progress-bar {
-            transition: width 0.3s ease;
+        /* Improved button sizing for better touch targets */
+        .btn {
+            padding: 0.5rem 1rem;
+            font-size: var(--main-font-size);
+            min-height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         /* Score Display */
@@ -154,7 +174,110 @@
             background: rgba(255, 255, 255, 0.1);
             padding: 5px 10px;
             border-radius: 20px;
-            font-size: 14px;
+            font-size: calc(var(--main-font-size) - 0.2rem);
+            white-space: nowrap;
+        }
+
+        /* Progress bar */
+        .progress {
+            height: 4px;
+        }
+
+        /* Container settings */
+        .container {
+            padding-left: max(5px, 2vw) !important;
+            padding-right: max(5px, 2vw) !important;
+            max-width: 100% !important;
+            padding-top: 75px !important;
+        }
+
+        .puzzle-container {
+            padding-left: max(10px, 3vw) !important;
+            padding-right: max(10px, 3vw) !important;
+            margin-left: 3px !important;
+            margin-right: 3px !important;
+        }
+
+        /* More specific breakpoints for better scaling */
+        @media (max-width: 414px) {
+            .game-header .d-flex.align-items-center.gap-3 {
+                gap: 0.3rem !important;
+            }
+
+            .score-display {
+                padding: 3px 6px;
+                font-size: 0.8rem;
+            }
+
+            .word-list {
+                grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+            }
+
+            .word-item {
+                font-size: 0.85rem;
+                padding: 0.4rem;
+            }
+
+            .btn-sm {
+                padding: 0.25rem 0.5rem;
+                font-size: 0.75rem;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .game-header h4 {
+                font-size: 0.95rem;
+                max-width: 40vw;
+            }
+
+            .letter-cell {
+                width: calc(min(30px, 8vw));
+                height: calc(min(30px, 8vw));
+                font-size: calc(min(0.9rem, 4.5vw));
+                border-width: 1.5px;
+            }
+
+            .score-display {
+                padding: 2px 5px;
+                font-size: 0.75rem;
+            }
+
+            .word-list {
+                grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+                gap: 0.3rem;
+            }
+
+            .word-item {
+                font-size: 0.8rem;
+                padding: 0.35rem;
+                min-height: 32px;
+            }
+        }
+
+        @media (max-width: 320px) {
+            .letter-cell {
+                width: calc(min(25px, 7vw));
+                height: calc(min(25px, 7vw));
+                font-size: calc(min(0.8rem, 4vw));
+                border-width: 1px;
+            }
+
+            .container {
+                padding-left: 3px !important;
+                padding-right: 3px !important;
+            }
+
+            .puzzle-container {
+                padding: 8px !important;
+            }
+
+            .word-list {
+                grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+            }
+
+            .score-display {
+                font-size: 0.7rem;
+            }
         }
     </style>
 </head>

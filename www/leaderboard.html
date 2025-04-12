@@ -8,77 +8,177 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
     <style>
+        html,
+        body {
+            font-size: 16px;
+            overscroll-behavior-y: none;
+            width: 100%;
+            height: 100%;
+            overflow-x: hidden;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Fluid typography that scales with viewport width */
+        :root {
+            --main-font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+            --header-font-size: clamp(1rem, 3vw, 1.3rem);
+            --item-font-size: clamp(0.85rem, 2.5vw, 1rem);
+            --btn-font-size: clamp(0.85rem, 2.5vw, 1rem);
+        }
+
         .game-header {
             background: #28a745;
             color: white;
-            padding: 1.25rem 1rem;
+            padding: 0.75rem 0;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            height: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
         }
 
-        .game-header .btn-outline-light {
-            border-width: 2px;
-            transition: all 0.3s ease;
+        .game-header h4 {
+            font-size: var(--header-font-size);
+            font-weight: 600;
+            margin-bottom: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 70vw;
         }
 
-        .game-header .btn-outline-light:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        .content-container {
+            padding-top: 85px !important;
+            padding-bottom: 20px;
+            width: 100%;
+            max-width: 100%;
+            margin: 0 auto;
         }
 
         .avatar {
-            width: 40px;
-            height: 40px;
+            width: 45px;
+            height: 45px;
             border-radius: 50%;
             background-color: rgba(40, 167, 69, 0.1);
             display: flex;
             align-items: center;
             justify-content: center;
             border: 2px solid #28a745;
-            padding: 0.25rem;
+            padding: 0.3rem;
+        }
+
+        .avatar i {
+            font-size: var(--item-font-size);
         }
 
         .top-avatar {
             width: 80px;
             height: 80px;
             margin: 0 auto;
-            border: 4px solid #28a745;
+            border-width: 3px;
+        }
+
+        .top-avatar i {
+            font-size: calc(var(--item-font-size) * 2);
         }
 
         .list-item {
-            padding: 1.25rem 1rem;
+            padding: 0.8rem 0.6rem;
             border-bottom: 1px solid rgba(40, 167, 69, 0.1);
             transition: all 0.3s ease;
-            margin: 0.5rem 0;
+            margin: 0.3rem 0;
+            font-size: var(--main-font-size);
         }
 
         .list-item:hover {
             background-color: rgba(40, 167, 69, 0.05);
+            transform: translateY(-2px);
         }
 
         .game-container {
             background: white;
-            border-radius: 15px;
-            padding: 2rem 1.75rem;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            margin: 0.5rem 0.25rem;
-        }
-
-        .search-box {
-            display: none;
-            /* Hide any existing search boxes */
+            border-radius: 12px;
+            padding: 1.25rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            max-width: 850px;
+            margin: 0.5rem auto;
         }
 
         .player-card {
             background: rgba(255, 255, 255, 0.1);
             border-radius: 12px;
-            padding: 1.5rem 1rem;
+            padding: 1rem;
             transition: all 0.3s ease;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem;
             text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Top players podium layout */
+        .top-players .row {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            margin-top: 20px;
+            position: relative;
+            height: auto;
+            min-height: 180px;
+            padding-bottom: 20px;
+        }
+
+        /* First place styling - center and larger */
+        .top-players .player-item:nth-child(2) {
+            order: 2;
+            transform: scale(1.15);
+            z-index: 3;
+            position: relative;
+            top: -20px;
+            max-width: 150px;
+        }
+
+        /* Second place styling - left side */
+        .top-players .player-item:nth-child(1) {
+            order: 1;
+            transform: scale(0.9);
+            z-index: 2;
+            position: relative;
+            top: 10px;
+            margin-right: -5px;
+            max-width: 130px;
+        }
+
+        /* Third place styling - right side */
+        .top-players .player-item:nth-child(3) {
+            order: 3;
+            transform: scale(0.85);
+            z-index: 1;
+            position: relative;
+            top: 15px;
+            margin-left: -5px;
+            max-width: 130px;
+        }
+
+        .player-card h5 {
+            font-size: calc(var(--main-font-size) + 0.1rem);
+            margin: 0.8rem 0 0.4rem;
+            text-align: center;
+            width: 100%;
         }
 
         .player-card:hover {
             transform: translateY(-3px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
         }
 
         .loading-spinner {
@@ -87,103 +187,237 @@
             padding: 2rem;
         }
 
-        /* Mobile responsiveness improvements */
-        @media (max-width: 767px) {
-            .game-container {
-                padding: 1.5rem 1rem;
-                margin: 0.25rem;
-                border-radius: 10px;
+        .badge {
+            font-size: 0.9rem;
+            padding: 0.4rem 0.8rem;
+        }
+
+        /* Improved button sizing for better touch targets */
+        .btn {
+            padding: 0.5rem 1rem;
+            font-size: var(--btn-font-size);
+            min-height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Progress bar */
+        .progress {
+            height: 4px;
+            width: 100%;
+        }
+
+        /* Container settings */
+        .container {
+            padding-left: max(5px, 2vw) !important;
+            padding-right: max(5px, 2vw) !important;
+            max-width: 100% !important;
+            width: 100%;
+        }
+
+        .game-container {
+            padding-left: max(10px, 3vw) !important;
+            padding-right: max(10px, 3vw) !important;
+            margin-left: 3px !important;
+            margin-right: 3px !important;
+        }
+
+        .points {
+            font-weight: 600;
+            color: #28a745;
+        }
+
+        .rank {
+            min-width: 25px;
+            text-align: center;
+            font-weight: 600;
+            color: #28a745;
+        }
+
+        .player-name {
+            font-size: var(--item-font-size);
+            max-width: 150px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            text-align: center;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .list-item .player-name {
+            text-align: left;
+            margin: 0;
+            display: block;
+        }
+
+        /* Mobile optimizations */
+        @media (max-width: 576px) {
+            .top-players .row {
+                min-height: 160px;
+            }
+
+            .top-players .player-item:nth-child(2) {
+                transform: scale(1.05);
+                top: -15px;
+                max-width: 120px;
+            }
+
+            .top-players .player-item:nth-child(1) {
+                transform: scale(0.85);
+                max-width: 100px;
+            }
+
+            .top-players .player-item:nth-child(3) {
+                transform: scale(0.8);
+                max-width: 100px;
             }
 
             .top-avatar {
-                width: 55px;
-                height: 55px;
+                width: 60px;
+                height: 60px;
+            }
+        }
+
+        @media (max-width: 414px) {
+            .game-header .d-flex.align-items-center {
+                flex-wrap: wrap;
+                justify-content: space-between;
+                width: 100%;
+            }
+
+            .content-container {
+                padding-top: 80px !important;
+            }
+
+            .top-avatar {
+                width: 65px;
+                height: 65px;
+            }
+
+            .player-name {
+                max-width: 100px;
+                font-size: 0.9rem;
+            }
+
+            .avatar {
+                width: 40px;
+                height: 40px;
             }
 
             .list-item {
-                padding: 1rem 0.75rem;
-                margin: 0.25rem 0;
+                padding: 0.7rem 0.5rem;
+            }
+
+            .btn {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.85rem;
+            }
+
+            /* Adjust top players podium for smaller screens */
+            .top-players .row {
+                min-height: 150px;
+            }
+
+            .top-players .player-item:nth-child(2) {
+                transform: scale(1);
+                top: -10px;
+                max-width: 110px;
+            }
+
+            .top-players .player-item:nth-child(1),
+            .top-players .player-item:nth-child(3) {
+                transform: scale(0.7);
+                max-width: 90px;
+            }
+
+            .player-card .badge {
+                font-size: 0.7rem;
+                padding: 0.2rem 0.5rem;
+            }
+
+            .player-card h5 {
+                margin: 0.5rem 0 0.3rem;
+            }
+
+            .player-card .h6 {
+                font-size: 0.8rem;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .game-header h4 {
+                font-size: 0.95rem;
+                max-width: 50vw;
+            }
+
+            .top-avatar {
+                width: 60px;
+                height: 60px;
             }
 
             .player-name {
-                font-size: 0.9rem;
-                max-width: 100px;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                white-space: nowrap;
-            }
-
-            .points {
-                font-size: 0.9rem;
-            }
-
-            .rank {
-                min-width: 20px;
-                text-align: center;
-            }
-
-            .game-header h4 {
-                font-size: 1.2rem;
+                max-width: 80px;
+                font-size: 0.85rem;
             }
 
             .container {
-                padding-left: 10px;
-                padding-right: 10px;
+                padding-left: 5px !important;
+                padding-right: 5px !important;
+            }
+
+            .top-players .player-item:nth-child(2) {
+                transform: scale(0.95);
+                max-width: 100px;
+            }
+
+            .top-players .player-item:nth-child(1),
+            .top-players .player-item:nth-child(3) {
+                transform: scale(0.65);
+                max-width: 80px;
             }
         }
 
-        @media (max-width: 575px) {
-            .top-players .row {
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-            }
-
-            .top-players .player-card {
-                width: 90%;
-                margin-bottom: 1rem;
-            }
-
-            .container.py-4 {
-                padding-top: 1rem !important;
-                padding-bottom: 1rem !important;
+        @media (max-width: 320px) {
+            .container {
+                padding-left: 3px !important;
+                padding-right: 3px !important;
             }
 
             .game-container {
-                padding: 1.25rem 0.75rem;
+                padding: 8px !important;
             }
 
-            .player-card {
-                padding: 1.25rem 0.75rem;
-            }
-
-            .badge {
-                font-size: 0.7rem;
-            }
-        }
-
-        /* Extra small devices */
-        @media (max-width: 375px) {
             .player-name {
-                max-width: 80px;
+                max-width: 70px;
+                font-size: 0.8rem;
             }
 
             .avatar {
                 width: 35px;
                 height: 35px;
+                min-width: 35px;
             }
 
-            .top-avatar {
-                width: 50px;
-                height: 50px;
+            .top-players .row {
+                min-height: 140px;
             }
 
-            .list-item {
-                padding: 0.75rem 0.5rem;
+            .top-players .player-item:nth-child(2) {
+                transform: scale(0.9);
+                max-width: 90px;
             }
 
-            .game-container {
-                padding: 1rem 0.5rem;
+            .top-players .player-item:nth-child(1),
+            .top-players .player-item:nth-child(3) {
+                transform: scale(0.6);
+                max-width: 70px;
+            }
+
+            .player-card .badge {
+                font-size: 0.65rem;
+                padding: 0.15rem 0.4rem;
             }
         }
     </style>
@@ -192,18 +426,20 @@
 <body class="bg-light">
     <!-- Header -->
     <div class="game-header">
-        <div class="container d-flex justify-content-between align-items-center px-4">
+        <div class="container d-flex justify-content-between align-items-center">
             <h4 class="mb-0">
-                <i class="bi bi-trophy-fill"></i> Leaderboard
+                <i class="bi bi-trophy"></i> Leaderboard
             </h4>
-            <a href="home.html" class="btn btn-outline-light px-3">
-                <i class="bi bi-house-fill"></i>
+            <a href="home.html" class="btn btn-outline-light btn-sm">
+                <i class="bi bi-house"></i> Home
             </a>
         </div>
+        <div class="progress mt-2" style="height: 5px; width: 100%;">
+            <div class="progress-bar bg-warning" style="width: 100%"></div>
+        </div>
     </div>
-    <div class="container py-4 px-3">
-        <!-- Search Bar - REMOVED -->
 
+    <div class="container content-container">
         <!-- Game Container -->
         <div class="game-container">
             <!-- Loading Spinner -->
@@ -214,7 +450,10 @@
             </div>
 
             <!-- Top 3 Players -->
-            <div id="topPlayers" class="top-players mb-4" style="display: none;">
+            <div id="topPlayers" class="top-players" style="display: none;">
+                <h4 class="text-center text-success mb-3">
+                    <i class="bi bi-award"></i> Top Players
+                </h4>
                 <div class="row justify-content-center">
                     <!-- Players will be dynamically inserted here -->
                 </div>
@@ -249,7 +488,34 @@
                     document.getElementById('loadingSpinner').style.display = 'none';
                 });
 
-            // Search functionality - REMOVED
+            // Prevent scrolling above the top boundary
+            let lastScrollTop = 0;
+            let lastTouch = 0;
+
+            document.addEventListener('scroll', function () {
+                const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+                if (scrollTop < lastScrollTop && scrollTop <= 0) {
+                    window.scrollTo(0, 0);
+                }
+
+                lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+            }, { passive: false });
+
+            document.addEventListener('touchmove', function (e) {
+                const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                if (scrollTop <= 0) {
+                    const touch = e.touches[0];
+                    if (touch.clientY > lastTouch) {
+                        e.preventDefault();
+                    }
+                }
+                lastTouch = e.touches[0].clientY;
+            }, { passive: false });
+
+            document.addEventListener('touchstart', function (e) {
+                lastTouch = e.touches[0].clientY;
+            }, { passive: true });
         });
 
         // Function to simplify names (extract first word only)
@@ -296,8 +562,10 @@
                                 <div class="avatar top-avatar mb-2" ${borderColor}>
                                     <i class="bi bi-person-fill text-success h1 mb-0"></i>
                                 </div>
-                                <h5 class="mb-1 player-name text-truncate" title="${player.username}">${simpleName}</h5>
-                                <div class="h6 text-success">${player.score} Pts</div>
+                                <h5 class="mb-1 text-center w-100" title="${player.username}">
+                                    <span class="player-name">${simpleName}</span>
+                                </h5>
+                                <div class="h6 text-success text-center">${player.score} Pts</div>
                                 <div class="badge ${badgeClass}">${rank}${getRankSuffix(rank)} Place</div>
                             </div>
                         `;

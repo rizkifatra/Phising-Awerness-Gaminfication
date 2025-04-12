@@ -8,297 +8,330 @@
     <link rel="stylesheet" href="login.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script defer src="script.js"></script>
-
-
-</head>
-<style>
-    /* Reset and Global Styles */
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-    }
-
-    body {
-        font-family: 'Inter', sans-serif;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        background-color: #f9f9f9;
-        /* Light background */
-        height: 100vh;
-        margin: 0;
-        color: #212529;
-        /* Dark text color */
-    }
-
-    /* Login Card Container */
-    .login-card {
-        width: 100%;
-        max-width: 400px;
-        background-color: #ffffff;
-        /* White background */
-        border-radius: 16px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        /* Subtle shadow */
-        padding: 20px;
-        text-align: center;
-    }
-
-    /* Logo Styles */
-    .logo-container {
-        margin-bottom: 20px;
-    }
-
-    .logo {
-        height: 40px;
-    }
-
-    /* Title and Subtitle */
-    .title {
-        font-size: 24px;
-        font-weight: 700;
-        margin-bottom: 10px;
-        color: #212529;
-        /* Dark text */
-    }
-
-    .subtitle {
-        font-size: 14px;
-        color: #6c757d;
-        /* Muted text */
-        margin-bottom: 20px;
-        text-align: center;
-    }
-
-    /* Login Form Styles */
-    .login-form {
-        display: flex;
-        flex-direction: column;
-        margin-bottom: 20px;
-    }
-
-    .input-group {
-        margin-bottom: 16px;
-    }
-
-    .input-group label {
-        font-size: 14px;
-        font-weight: 500;
-        color: #212529;
-        /* Dark text */
-        margin-bottom: 6px;
-        display: block;
-    }
-
-    .input-group input {
-        width: 100%;
-        padding: 12px;
-        font-size: 14px;
-        border: 1px solid #e0e0e0;
-        /* Light border */
-        border-radius: 8px;
-        background-color: #ffffff;
-        /* White background */
-        color: #212529;
-        /* Dark text */
-    }
-
-    .input-group input:focus {
-        border-color: #28a745;
-        /* Green border on focus */
-        outline: none;
-        background-color: #f1f9ff;
-        /* Light blue background */
-    }
-
-    /* Password Wrapper */
-    .password-wrapper {
-        position: relative;
-    }
-
-    .password-wrapper .toggle-password {
-        position: absolute;
-        top: 50%;
-        right: 12px;
-        transform: translateY(-50%);
-        background: none;
-        border: none;
-        font-size: 16px;
-        cursor: pointer;
-        color: #28a745;
-        /* Green toggle button */
-    }
-
-    /* Forgot Password Link */
-    .forgot-password {
-        text-align: right;
-        font-size: 14px;
-        color: #28a745;
-        /* Green text */
-        text-decoration: none;
-        margin-bottom: 20px;
-    }
-
-    .forgot-password:hover {
-        text-decoration: underline;
-    }
-
-    /* Login Button */
-    .login-button {
-        width: 100%;
-        padding: 12px;
-        background-color: #28a745;
-        /* Green background */
-        color: #ffffff;
-        /* White text */
-        border: none;
-        border-radius: 8px;
-        font-size: 16px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-    }
-
-    .login-button:hover {
-        background-color: #218838;
-        /* Darker green on hover */
-    }
-
-    /* Divider Styles */
-    .divider {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin: 20px 0;
-        font-size: 14px;
-        color: #6c757d;
-        /* Muted text */
-        position: relative;
-    }
-
-    .divider::before,
-    .divider::after {
-        content: '';
-        position: absolute;
-        height: 1px;
-        width: 40%;
-        background: #e0e0e0;
-        /* Light gray */
-    }
-
-    .divider::before {
-        left: 0;
-    }
-
-    .divider::after {
-        right: 0;
-    }
-
-    .divider span {
-        background: #fff;
-        padding: 0 10px;
-        z-index: 1;
-    }
-
-    /* Social Button */
-    .social-button {
-        width: 100%;
-        padding: 12px;
-        font-size: 14px;
-        border: 1px solid #e0e0e0;
-        /* Light border */
-        border-radius: 8px;
-        background-color: #ffffff;
-        /* White background */
-        color: #212529;
-        /* Dark text */
-        cursor: pointer;
-        margin-bottom: 10px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-        transition: background-color 0.3s ease;
-    }
-
-    .social-button:hover {
-        background-color: #f8f9fa;
-        /* Light gray on hover */
-    }
-
-    .google {
-        color: #28a745;
-        /* Google red color */
-    }
-
-    .facebook {
-        color: #1877f2;
-        /* Facebook blue color */
-    }
-
-    /* Sign Up Link */
-    .signup-text {
-        font-size: 14px;
-        color: #6c757d;
-        /* Muted text */
-    }
-
-    .signup-link {
-        color: #28a745;
-        /* Green text */
-        text-decoration: none;
-        font-weight: 600;
-    }
-
-    .signup-link:hover {
-        text-decoration: underline;
-    }
-
-    /* Updated mobile styles */
-    @media (max-width: 480px) {
+    <style>
+        /* Prevent overscroll bounce effect */
+        html,
         body {
-            background-color: #ffffff;
+            overscroll-behavior-y: none;
+            width: 100%;
+            height: 100%;
+            overflow-x: hidden;
+            font-size: 18px;
+            /* Increased base font size */
         }
 
-        .login-card {
-            max-width: 100%;
+        /* Reset and Global Styles */
+        * {
             margin: 0;
-            padding: 25px 20px;
-            border-radius: 0;
-            box-shadow: none;
-            min-height: 100vh;
+            padding: 0;
+            box-sizing: border-box;
         }
 
+        body {
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f9f9f9;
+            height: 100vh;
+            margin: 0;
+            color: #212529;
+        }
+
+        /* Login Card Container */
+        .login-card {
+            width: 100%;
+            max-width: 450px;
+            /* Increased width */
+            background-color: #ffffff;
+            border-radius: 18px;
+            /* Rounder corners */
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+            /* Enhanced shadow */
+            padding: 30px;
+            /* More padding */
+            text-align: center;
+        }
+
+        /* Fixes for excessive horizontal margins */
+        .login-card {
+            margin-left: 10px !important;
+            margin-right: 10px !important;
+            width: calc(100% - 20px) !important;
+            max-width: 450px !important;
+        }
+
+        @media (max-width: 576px) {
+            .login-card {
+                margin-left: 5px !important;
+                margin-right: 5px !important;
+                width: calc(100% - 10px) !important;
+                padding-left: 15px !important;
+                padding-right: 15px !important;
+            }
+        }
+
+        /* Logo Styles */
+        .logo-container {
+            margin-bottom: 25px;
+        }
+
+        .logo {
+            height: 50px;
+            /* Larger logo */
+        }
+
+        /* Title and Subtitle */
         .title {
-            font-size: 24px;
-            margin-top: 40px;
+            font-size: 28px;
+            /* Larger title */
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: #212529;
+        }
+
+        .subtitle {
+            font-size: 18px;
+            /* Larger subtitle */
+            color: #6c757d;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        /* Login Form Styles */
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 25px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+            /* More spacing */
+        }
+
+        .input-group label {
+            font-size: 16px;
+            /* Larger label */
+            font-weight: 500;
+            color: #212529;
+            margin-bottom: 8px;
+            display: block;
         }
 
         .input-group input {
+            width: 100%;
             padding: 15px;
+            /* More padding */
             font-size: 16px;
-            background-color: #f8f9fa;
             border: 1px solid #e0e0e0;
-            margin-bottom: 15px;
+            border-radius: 10px;
+            /* Rounder corners */
+            background-color: #ffffff;
+            color: #212529;
         }
 
-        .login-button {
-            padding: 16px;
+        .input-group input:focus {
+            border-color: #28a745;
+            outline: none;
+            background-color: #f1f9ff;
+        }
+
+        /* Password Wrapper */
+        .password-wrapper {
+            position: relative;
+        }
+
+        .password-wrapper .toggle-password {
+            position: absolute;
+            top: 50%;
+            right: 15px;
+            /* Adjusted position */
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            font-size: 1.4rem;
+            /* Larger icon */
+            padding: 10px;
+            cursor: pointer;
+            color: #28a745;
+        }
+
+        /* Forgot Password Link */
+        .forgot-password {
+            text-align: right;
             font-size: 16px;
-            margin-top: 20px;
+            /* Larger text */
+            color: #28a745;
+            text-decoration: none;
+            margin-bottom: 25px;
         }
 
-        .social-button {
-            padding: 16px;
-            margin-top: 15px;
+        .forgot-password:hover {
+            text-decoration: underline;
         }
 
+        /* Login Button */
+        .login-button {
+            width: 100%;
+            padding: 15px;
+            /* More padding */
+            background-color: #28a745;
+            color: #ffffff;
+            border: none;
+            border-radius: 10px;
+            /* Rounder corners */
+            font-size: 18px;
+            /* Larger text */
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            min-height: 55px;
+            /* Taller button */
+        }
+
+        .login-button:hover {
+            background-color: #218838;
+        }
+
+        /* Divider Styles */
         .divider {
-            margin: 30px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 25px 0;
+            /* More spacing */
+            font-size: 16px;
+            /* Larger text */
+            color: #6c757d;
+            position: relative;
         }
-    }
-</style>
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            position: absolute;
+            height: 1px;
+            width: 40%;
+            background: #e0e0e0;
+        }
+
+        .divider::before {
+            left: 0;
+        }
+
+        .divider::after {
+            right: 0;
+        }
+
+        .divider span {
+            background: #fff;
+            padding: 0 12px;
+            z-index: 1;
+        }
+
+        /* Social Button */
+        .social-button {
+            width: 100%;
+            padding: 15px;
+            /* More padding */
+            font-size: 16px;
+            /* Larger text */
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            /* Rounder corners */
+            background-color: #ffffff;
+            color: #212529;
+            cursor: pointer;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: background-color 0.3s ease;
+            min-height: 55px;
+            /* Taller button */
+        }
+
+        .social-button:hover {
+            background-color: #f8f9fa;
+        }
+
+        .google {
+            color: #28a745;
+        }
+
+        .facebook {
+            color: #1877f2;
+        }
+
+        /* Sign Up Link */
+        .signup-text {
+            font-size: 16px;
+            /* Larger text */
+            color: #6c757d;
+        }
+
+        .signup-link {
+            color: #28a745;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .signup-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Updated mobile styles */
+        @media (max-width: 480px) {
+            body {
+                background-color: #ffffff;
+            }
+
+            .login-card {
+                max-width: 100%;
+                margin: 0;
+                padding: 30px 25px;
+                /* Slightly increased padding */
+                border-radius: 0;
+                box-shadow: none;
+                min-height: 100vh;
+            }
+
+            .title {
+                font-size: 28px;
+                /* Consistent with desktop */
+                margin-top: 50px;
+                /* More space at top */
+            }
+
+            .input-group input {
+                padding: 16px;
+                /* Slightly larger on mobile */
+                font-size: 18px;
+                background-color: #f8f9fa;
+                border: 1px solid #e0e0e0;
+                margin-bottom: 15px;
+            }
+
+            .login-button {
+                padding: 16px;
+                font-size: 18px;
+                margin-top: 25px;
+            }
+
+            .social-button {
+                padding: 16px;
+                margin-top: 20px;
+                font-size: 16px;
+            }
+
+            .divider {
+                margin: 35px 0;
+            }
+        }
+    </style>
+</head>
 
 <body>
     <div class="login-card">

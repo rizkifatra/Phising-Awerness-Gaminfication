@@ -8,33 +8,96 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
     <style>
+        /* Prevent overscroll bounce effect */
+        html,
+        body {
+            font-size: 16px;
+            overscroll-behavior-y: none;
+            width: 100%;
+            height: 100%;
+            overflow-x: hidden;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Fluid typography that scales with viewport width */
+        :root {
+            --main-font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+            --header-font-size: clamp(1rem, 3vw, 1.3rem);
+            --item-font-size: clamp(0.85rem, 2.5vw, 1rem);
+            --btn-font-size: clamp(0.85rem, 2.5vw, 1rem);
+        }
+
+        /* Updated header to match leaderboard */
         .game-header {
             background: #28a745;
             color: white;
-            padding: 1rem;
+            padding: 0.75rem 0;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            height: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
+
+        .game-header h4 {
+            font-size: var(--header-font-size);
+            font-weight: 600;
+            margin-bottom: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 70vw;
+        }
+
+        .content-container {
+            padding-top: 85px !important;
+            padding-bottom: 20px;
+            width: 100%;
+            max-width: 100%;
+            margin: 0 auto;
+        }
+
+        /* Progress bar added to match leaderboard */
+        .progress {
+            height: 4px;
+            width: 100%;
         }
 
         .nav-pills .nav-link {
             color: #28a745;
             border: 1px solid #28a745;
-            margin: 0 0.5rem;
-            border-radius: 8px;
+            margin: 0 0.3rem;
+            border-radius: 10px;
             transition: all 0.3s ease;
+            font-size: var(--btn-font-size);
+            padding: 0.5rem 0.85rem;
         }
 
         .nav-pills .nav-link.active {
             background-color: #28a745;
+            color: white;
         }
 
         .level-btn {
+            min-height: 70px;
+            min-width: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
             width: 100%;
             aspect-ratio: 1;
             border: 2px solid #28a745;
             background: white;
             color: #28a745;
-            border-radius: 12px;
-            font-size: 1.5rem;
+            border-radius: 14px;
             font-weight: bold;
             transition: all 0.3s ease;
         }
@@ -48,27 +111,135 @@
 
         .game-container {
             background: white;
-            border-radius: 15px;
-            padding: 2rem;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            padding: max(10px, 3vw);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            max-width: 850px;
+            margin: 0.5rem auto;
+        }
+
+        .game-container h3 {
+            font-size: var(--header-font-size);
+            margin-bottom: 0.75rem;
+            color: #28a745;
+        }
+
+        /* Buttons that scale better and match leaderboard */
+        .btn {
+            padding: 0.5rem 1rem;
+            font-size: var(--btn-font-size);
+            min-height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .row.g-4 {
+            --bs-gutter-y: 0.75rem;
+        }
+
+        /* Container settings */
+        .container {
+            padding-left: max(5px, 2vw) !important;
+            padding-right: max(5px, 2vw) !important;
+            max-width: 100% !important;
+            width: 100%;
+        }
+
+        .game-container {
+            padding-left: max(10px, 3vw) !important;
+            padding-right: max(10px, 3vw) !important;
+            margin-left: 3px !important;
+            margin-right: 3px !important;
+        }
+
+        /* More specific breakpoints for better scaling */
+        @media (max-width: 576px) {
+            /* ...existing code... */
+        }
+
+        @media (max-width: 414px) {
+            .game-header .d-flex.align-items-center {
+                flex-wrap: wrap;
+                justify-content: space-between;
+                width: 100%;
+            }
+
+            .content-container {
+                padding-top: 80px !important;
+            }
+
+            .nav-pills .nav-link {
+                font-size: 0.9rem;
+                padding: 0.4rem 0.7rem;
+            }
+
+            .level-btn {
+                min-height: 65px;
+                min-width: 65px;
+                font-size: 1.2rem;
+            }
+
+            .btn {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.85rem;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .game-header h4 {
+                font-size: 0.95rem;
+                max-width: 50vw;
+            }
+
+            .level-btn {
+                min-height: 55px;
+                min-width: 55px;
+                font-size: 1.1rem;
+            }
+
+            .container {
+                padding-left: 5px !important;
+                padding-right: 5px !important;
+            }
+        }
+
+        @media (max-width: 320px) {
+            .container {
+                padding-left: 3px !important;
+                padding-right: 3px !important;
+            }
+
+            .game-container {
+                padding: 8px !important;
+            }
+
+            .level-btn {
+                min-height: 50px;
+                min-width: 50px;
+                font-size: 1rem;
+            }
         }
     </style>
 </head>
 
 <body class="bg-light">
-    <!-- Header -->
+    <!-- Updated header to match leaderboard -->
     <div class="game-header">
         <div class="container d-flex justify-content-between align-items-center">
             <h4 class="mb-0">
                 <i class="bi bi-controller"></i> Play Games
             </h4>
-            <a href="home.html" class="btn btn-outline-light">
-                <i class="bi bi-house"></i>
+            <a href="home.html" class="btn btn-outline-light btn-sm">
+                <i class="bi bi-house"></i> Home
             </a>
+        </div>
+        <div class="progress mt-2" style="height: 5px; width: 100%;">
+            <div class="progress-bar bg-warning" style="width: 100%"></div>
         </div>
     </div>
 
-    <div class="container mt-4">
+    <div class="container content-container">
         <!-- Game Type Navigation -->
         <ul class="nav nav-pills justify-content-center mb-4" id="gameTabs">
             <li class="nav-item">
@@ -92,7 +263,7 @@
         <div class="tab-content game-container">
             <!-- MCQ Section -->
             <div class="tab-pane fade show active" id="mcq">
-                <h3 class="text-center text-success mb-4">Multiple Choice Questions</h3>
+                <h3 class="text-center mb-4">Multiple Choice Questions</h3>
                 <div class="row g-4" id="mcq-levels">
                     <!-- Level buttons will be dynamically inserted here -->
                     <div class="text-center">
@@ -105,7 +276,7 @@
 
             <!-- Fill Blank Section -->
             <div class="tab-pane fade" id="fillBlank">
-                <h3 class="text-center text-success mb-4">Fill in the Blanks</h3>
+                <h3 class="text-center mb-4">Fill in the Blanks</h3>
                 <div class="row g-4" id="fill-levels">
                     <!-- Level buttons will be dynamically inserted here -->
                     <div class="text-center">
@@ -118,7 +289,7 @@
 
             <!-- Puzzle Section -->
             <div class="tab-pane fade" id="puzzle">
-                <h3 class="text-center text-success mb-4">Puzzle Challenge</h3>
+                <h3 class="text-center mb-4">Puzzle Challenge</h3>
                 <div class="row g-4" id="puzzle-levels">
                     <!-- Level buttons will be dynamically inserted here -->
                     <div class="text-center">
@@ -130,261 +301,292 @@
             </div>
         </div>
     </div>
-</body>
-<!-- Keep existing HTML structure -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-    class QuizGame {
-        constructor() {
-            this.params = new URLSearchParams(window.location.search);
-            this.gameType = this.params.get('type') || 'mcq';
-            this.level = this.params.get('level') || '1';
-            this.score = 0;
-            this.currentQuestion = 0;
-            this.questions = [];
-            this.timer = null;
-            this.timeLeft = 300; // 5 minutes
-        }
 
-        async init() {
-            try {
-                this.showLoading();
-                await this.fetchQuestions();
-                this.initializeGame();
-                this.startTimer();
-            } catch (error) {
-                console.error('Error initializing game:', error);
-                this.showError('Failed to load questions');
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        class QuizGame {
+            constructor() {
+                this.params = new URLSearchParams(window.location.search);
+                this.gameType = this.params.get('type') || 'mcq';
+                this.level = this.params.get('level') || '1';
+                this.score = 0;
+                this.currentQuestion = 0;
+                this.questions = [];
+                this.timer = null;
+                this.timeLeft = 300; // 5 minutes
             }
-        }
 
-        showLoading() {
-            document.getElementById('question-container').innerHTML = `
-                        <div class="text-center">
-                            <div class="spinner-border text-success" role="status">
-                                <span class="visually-hidden">Loading...</span>
+            async init() {
+                try {
+                    this.showLoading();
+                    await this.fetchQuestions();
+                    this.initializeGame();
+                    this.startTimer();
+                } catch (error) {
+                    console.error('Error initializing game:', error);
+                    this.showError('Failed to load questions');
+                }
+            }
+
+            showLoading() {
+                document.getElementById('question-container').innerHTML = `
+                            <div class="text-center">
+                                <div class="spinner-border text-success" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
                             </div>
-                        </div>
-                    `;
-        }
-
-        async fetchQuestions() {
-            try {
-                const response = await fetch(`http://localhost:8080/api/questions/${this.gameType}/${this.level}`);
-                if (!response.ok) throw new Error('Failed to fetch questions');
-                const data = await response.json();
-                if (!data || !data.length) throw new Error('No questions available');
-                this.questions = data;
-                this.totalQuestions = data.length;
-            } catch (error) {
-                throw error;
-            }
-        }
-
-        initializeGame() {
-            this.updateProgress();
-            this.loadQuestion();
-            this.updateScore();
-        }
-
-        updateProgress() {
-            const progress = (this.currentQuestion / this.totalQuestions) * 100;
-            document.getElementById('progress').style.width = `${progress}%`;
-        }
-
-        updateScore() {
-            document.getElementById('score').textContent = this.score;
-        }
-
-        startTimer() {
-            this.timer = setInterval(() => {
-                this.timeLeft--;
-                this.updateTimerDisplay();
-                if (this.timeLeft <= 0) this.gameOver('Time\'s up!');
-            }, 1000);
-        }
-
-        updateTimerDisplay() {
-            const minutes = Math.floor(this.timeLeft / 60);
-            const seconds = this.timeLeft % 60;
-            document.getElementById('timer').textContent =
-                `${minutes}:${seconds.toString().padStart(2, '0')}`;
-        }
-
-        loadQuestion() {
-            if (!this.questions[this.currentQuestion]) {
-                this.gameOver();
-                return;
+                        `;
             }
 
-            const question = this.questions[this.currentQuestion];
-            document.getElementById('question-text').textContent = question.question;
-            this.renderAnswerOptions(question);
-        }
-
-        renderAnswerOptions(question) {
-            const container = document.getElementById('answer-container');
-            container.innerHTML = '';
-
-            if (this.gameType === 'mcq') {
-                question.options.forEach((option, index) => {
-                    const button = document.createElement('button');
-                    button.className = 'option-btn';
-                    button.textContent = option;
-                    button.onclick = () => this.checkAnswer(index);
-                    container.appendChild(button);
-                });
-            } else {
-                const input = document.createElement('input');
-                input.type = 'text';
-                input.className = 'form-control mb-3';
-                input.placeholder = 'Your answer...';
-
-                const submitBtn = document.createElement('button');
-                submitBtn.className = 'btn btn-success';
-                submitBtn.textContent = 'Submit';
-                submitBtn.onclick = () => this.checkAnswer(input.value);
-
-                container.appendChild(input);
-                container.appendChild(submitBtn);
+            async fetchQuestions() {
+                try {
+                    const response = await fetch(`http://localhost:8080/api/questions/${this.gameType}/${this.level}`);
+                    if (!response.ok) throw new Error('Failed to fetch questions');
+                    const data = await response.json();
+                    if (!data || !data.length) throw new Error('No questions available');
+                    this.questions = data;
+                    this.totalQuestions = data.length;
+                } catch (error) {
+                    throw error;
+                }
             }
-        }
 
-        gameOver(message = 'Game Complete!') {
-            clearInterval(this.timer);
-            document.getElementById('question-container').innerHTML = `
-                        <div class="text-center">
-                            <h3>${message}</h3>
-                            <p class="h4 mb-4">Final Score: ${this.score}</p>
-                            <button class="btn btn-success" onclick="window.location.href='play.html'">
-                                Play Again
-                            </button>
-                        </div>
-                    `;
-        }
-
-        showError(message) {
-            document.getElementById('question-container').innerHTML = `
-                        <div class="alert alert-danger">
-                            ${message}. Please try again later.
-                        </div>
-                    `;
-        }
-    }
-
-    class GameLevels {
-        constructor() {
-            this.gameTypes = {
-                'mcq': 'mcq-levels',
-                'fill': 'fill-levels',
-                'puzzle': 'puzzle-levels'
-            };
-            this.initializeLevels();
-        }
-
-        async initializeLevels() {
-            try {
-                await this.fetchAndDisplayLevels('mcq');
-                await this.fetchAndDisplayLevels('fill');
-                await this.fetchAndDisplayLevels('puzzle');
-            } catch (error) {
-                console.error('Error loading levels:', error);
+            initializeGame() {
+                this.updateProgress();
+                this.loadQuestion();
+                this.updateScore();
             }
-        }
 
-        async fetchAndDisplayLevels(gameType) {
-            try {
-                console.log(`Fetching levels for ${gameType}...`);
-                const apiUrl = `api/get_levels.php?type=${gameType}`;
+            updateProgress() {
+                const progress = (this.currentQuestion / this.totalQuestions) * 100;
+                document.getElementById('progress').style.width = `${progress}%`;
+            }
 
-                const response = await fetch(apiUrl);
-                const text = await response.text();
+            updateScore() {
+                document.getElementById('score').textContent = this.score;
+            }
 
-                // Debug logging
-                console.log(`Raw response for ${gameType}:`, text);
+            startTimer() {
+                this.timer = setInterval(() => {
+                    this.timeLeft--;
+                    this.updateTimerDisplay();
+                    if (this.timeLeft <= 0) this.gameOver('Time\'s up!');
+                }, 1000);
+            }
 
-                // Only try to parse if we have content
-                if (!text.trim()) {
-                    throw new Error(`Empty response for ${gameType}`);
+            updateTimerDisplay() {
+                const minutes = Math.floor(this.timeLeft / 60);
+                const seconds = this.timeLeft % 60;
+                document.getElementById('timer').textContent =
+                    `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            }
+
+            loadQuestion() {
+                if (!this.questions[this.currentQuestion]) {
+                    this.gameOver();
+                    return;
                 }
 
-                const data = JSON.parse(text);
+                const question = this.questions[this.currentQuestion];
+                document.getElementById('question-text').textContent = question.question;
+                this.renderAnswerOptions(question);
+            }
 
-                if (!response.ok) {
-                    throw new Error(data.error || `Failed to fetch ${gameType} levels`);
+            renderAnswerOptions(question) {
+                const container = document.getElementById('answer-container');
+                container.innerHTML = '';
+
+                if (this.gameType === 'mcq') {
+                    question.options.forEach((option, index) => {
+                        const button = document.createElement('button');
+                        button.className = 'option-btn';
+                        button.textContent = option;
+                        button.onclick = () => this.checkAnswer(index);
+                        container.appendChild(button);
+                    });
+                } else {
+                    const input = document.createElement('input');
+                    input.type = 'text';
+                    input.className = 'form-control mb-3';
+                    input.placeholder = 'Your answer...';
+
+                    const submitBtn = document.createElement('button');
+                    submitBtn.className = 'btn btn-success';
+                    submitBtn.textContent = 'Submit';
+                    submitBtn.onclick = () => this.checkAnswer(input.value);
+
+                    container.appendChild(input);
+                    container.appendChild(submitBtn);
                 }
+            }
 
-                console.log(`${gameType} levels:`, data);
-                this.displayLevels(gameType, data);
-            } catch (error) {
-                console.error(`Error loading ${gameType} levels:`, error);
-                this.showError(gameType, error.message);
+            gameOver(message = 'Game Complete!') {
+                clearInterval(this.timer);
+                document.getElementById('question-container').innerHTML = `
+                            <div class="text-center">
+                                <h3>${message}</h3>
+                                <p class="h4 mb-4">Final Score: ${this.score}</p>
+                                <button class="btn btn-success" onclick="window.location.href='play.html'">
+                                    Play Again
+                                </button>
+                            </div>
+                        `;
+            }
+
+            showError(message) {
+                document.getElementById('question-container').innerHTML = `
+                            <div class="alert alert-danger">
+                                ${message}. Please try again later.
+                            </div>
+                        `;
             }
         }
 
-        displayLevels(gameType, levels) {
-            const container = document.getElementById(`${gameType}-levels`);
-            container.innerHTML = '';
-
-            if (!levels || levels.length === 0) {
-                container.innerHTML = '<div class="col-12"><div class="alert alert-info">No levels available for this game type</div></div>';
-                return;
+        class GameLevels {
+            constructor() {
+                this.gameTypes = {
+                    'mcq': 'mcq-levels',
+                    'fill': 'fill-levels',
+                    'puzzle': 'puzzle-levels'
+                };
+                this.initializeLevels();
             }
 
-            levels.forEach(level => {
-                const levelBtn = document.createElement('div');
-                levelBtn.className = 'col-4 col-md-2';
-                levelBtn.innerHTML = `
-                    <button class="level-btn" data-game="${gameType}" data-level="${level}">
-                        ${level}
-                    </button>
-                `;
-                container.appendChild(levelBtn);
-            });
+            async initializeLevels() {
+                try {
+                    await this.fetchAndDisplayLevels('mcq');
+                    await this.fetchAndDisplayLevels('fill');
+                    await this.fetchAndDisplayLevels('puzzle');
+                } catch (error) {
+                    console.error('Error loading levels:', error);
+                }
+            }
 
-            this.attachLevelClickHandlers(container);
-        }
+            async fetchAndDisplayLevels(gameType) {
+                try {
+                    console.log(`Fetching levels for ${gameType}...`);
+                    const apiUrl = `api/get_levels.php?type=${gameType}`;
 
-        showError(gameType, message) {
-            const container = document.getElementById(`${gameType}-levels`);
-            container.innerHTML = `
-                <div class="col-12">
-                    <div class="alert alert-danger">
-                        Failed to load levels: ${message}
-                    </div>
-                </div>
-            `;
-        }
+                    const response = await fetch(apiUrl);
+                    const text = await response.text();
 
-        attachLevelClickHandlers(container) {
-            container.querySelectorAll('.level-btn').forEach(button => {
-                button.addEventListener('click', () => {
-                    const gameType = button.dataset.game;
-                    const level = button.dataset.level;
-                    let gamePath;
+                    // Debug logging
+                    console.log(`Raw response for ${gameType}:`, text);
 
-                    switch (gameType) {
-                        case 'mcq':
-                            gamePath = 'mcq-game.html';
-                            break;
-                        case 'fill':
-                            gamePath = 'fillblank-game.html';
-                            break;
-                        case 'puzzle':
-                            gamePath = 'puzzle-game.html';
-                            break;
+                    // Only try to parse if we have content
+                    if (!text.trim()) {
+                        throw new Error(`Empty response for ${gameType}`);
                     }
 
-                    window.location.href = `/PAG/www/games/${gamePath}?level=${level}`;
-                });
-            });
-        }
-    }
+                    const data = JSON.parse(text);
 
-    // Initialize the game levels when the page loads
-    document.addEventListener('DOMContentLoaded', () => {
-        new GameLevels();
-    });
-</script>
+                    if (!response.ok) {
+                        throw new Error(data.error || `Failed to fetch ${gameType} levels`);
+                    }
+
+                    console.log(`${gameType} levels:`, data);
+                    this.displayLevels(gameType, data);
+                } catch (error) {
+                    console.error(`Error loading ${gameType} levels:`, error);
+                    this.showError(gameType, error.message);
+                }
+            }
+
+            displayLevels(gameType, levels) {
+                const container = document.getElementById(`${gameType}-levels`);
+                container.innerHTML = '';
+
+                if (!levels || levels.length === 0) {
+                    container.innerHTML = '<div class="col-12"><div class="alert alert-info">No levels available for this game type</div></div>';
+                    return;
+                }
+
+                levels.forEach(level => {
+                    const levelBtn = document.createElement('div');
+                    levelBtn.className = 'col-4 col-md-2';
+                    levelBtn.innerHTML = `
+                        <button class="level-btn" data-game="${gameType}" data-level="${level}">
+                            ${level}
+                        </button>
+                    `;
+                    container.appendChild(levelBtn);
+                });
+
+                this.attachLevelClickHandlers(container);
+            }
+
+            showError(gameType, message) {
+                const container = document.getElementById(`${gameType}-levels`);
+                container.innerHTML = `
+                    <div class="col-12">
+                        <div class="alert alert-danger">
+                            Failed to load levels: ${message}
+                        </div>
+                    </div>
+                `;
+            }
+
+            attachLevelClickHandlers(container) {
+                container.querySelectorAll('.level-btn').forEach(button => {
+                    button.addEventListener('click', () => {
+                        const gameType = button.dataset.game;
+                        const level = button.dataset.level;
+                        let gamePath;
+
+                        switch (gameType) {
+                            case 'mcq':
+                                gamePath = 'mcq-game.html';
+                                break;
+                            case 'fill':
+                                gamePath = 'fillblank-game.html';
+                                break;
+                            case 'puzzle':
+                                gamePath = 'puzzle-game.html';
+                                break;
+                        }
+
+                        window.location.href = `/PAG/www/games/${gamePath}?level=${level}`;
+                    });
+                });
+            }
+        }
+
+        // Initialize the game levels when the page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            new GameLevels();
+        });
+
+        // Prevent scrolling above the top boundary
+        document.addEventListener('DOMContentLoaded', function () {
+            let lastScrollTop = 0;
+            let lastTouch = 0;
+
+            document.addEventListener('scroll', function () {
+                const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+                if (scrollTop < lastScrollTop && scrollTop <= 0) {
+                    window.scrollTo(0, 0);
+                }
+
+                lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+            }, { passive: false });
+
+            document.addEventListener('touchmove', function (e) {
+                const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                if (scrollTop <= 0) {
+                    const touch = e.touches[0];
+                    if (touch.clientY > lastTouch) {
+                        e.preventDefault();
+                    }
+                }
+                lastTouch = e.touches[0].clientY;
+            }, { passive: false });
+
+            document.addEventListener('touchstart', function (e) {
+                lastTouch = e.touches[0].clientY;
+            }, { passive: true });
+        });
+    </script>
+</body>
 
 </html>

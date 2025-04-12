@@ -1,0 +1,44 @@
+/* Fixed header positioning */
+.header,
+.game-header {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    z-index: 1000 !important;
+    width: 100% !important;
+    height: 65px !important;
+}
+
+/* Content padding to prevent overlap with fixed header */
+.content-container,
+.container.py-4,
+.main-container,
+.profile-section,
+.puzzle-container,
+.question-card,
+.game-container {
+    margin-top: 80px !important;
+    padding-top: 10px !important;
+}
+
+/* Progress bar positioning */
+.progress.mt-2 {
+    position: fixed !important;
+    top: 65px !important;
+    left: 0 !important;
+    right: 0 !important;
+    z-index: 999 !important;
+    margin-top: 0 !important;
+    border-radius: 0 !important;
+}
+
+/* Mobile adjustments */
+@media (max-width: 576px) {
+
+    .content-container,
+    .container.py-4,
+    .main-container {
+        padding-top: 75px !important;
+    }
+}

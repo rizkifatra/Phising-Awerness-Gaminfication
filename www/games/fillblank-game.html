@@ -9,36 +9,93 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <style>
+        html,
+        body {
+            font-size: 16px;
+            overscroll-behavior-y: none;
+            height: 100%;
+            width: 100%;
+            overflow-x: hidden;
+        }
+
+        /* Fluid typography that scales with viewport width */
+        :root {
+            --main-font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+            --header-font-size: clamp(1rem, 3vw, 1.3rem);
+            --input-font-size: clamp(0.85rem, 2.5vw, 1rem);
+            --btn-font-size: clamp(0.85rem, 2.5vw, 1rem);
+        }
+
         .game-header {
             background: #28a745;
-            background: #28a745;
             color: white;
-            padding: 1rem;
+            padding: 0.75rem;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            height: 65px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+        }
+
+        .game-header h4 {
+            font-size: var(--header-font-size);
+            font-weight: 600;
+            margin-bottom: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 50vw;
+        }
+
+        .game-header .me-4 {
+            font-size: calc(var(--main-font-size) - 0.1rem);
+            margin-right: 0.6rem !important;
+        }
+
+        .game-header i {
+            font-size: calc(var(--main-font-size) + 0.1rem);
+        }
+
+        .container {
+            padding-left: max(5px, 2vw) !important;
+            padding-right: max(5px, 2vw) !important;
+            max-width: 100% !important;
+            padding-top: 75px !important;
         }
 
         .question-card {
-            max-width: 800px;
-            margin: 2rem auto;
-            padding: 2rem;
+            max-width: 850px;
+            margin: 0.5rem auto;
+            padding: max(10px, 3vw);
             background: white;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .text-success {
+            font-size: calc(var(--main-font-size) - 0.1rem);
+            margin-bottom: 0.4rem;
+        }
+
+        .question-text {
+            font-size: var(--main-font-size);
+            line-height: 1.5;
+            margin-bottom: 1rem;
         }
 
         .blank-input {
             display: inline-block;
-            width: 150px;
+            width: min(150px, 40vw);
             border: 2px solid #28a745;
-            border-radius: 5px;
-            padding: 5px 10px;
-            margin: 0 5px;
-        }
-
-        .question-text {
-            font-size: 1.2rem;
-            line-height: 2;
-            margin-bottom: 2rem;
+            border-radius: 6px;
+            padding: 5px 6px;
+            margin: 0 3px;
+            font-size: var(--input-font-size);
+            min-height: 38px;
         }
 
         .correct-answer {
@@ -49,6 +106,140 @@
         .wrong-answer {
             background-color: #f8d7da;
             border-color: #dc3545;
+        }
+
+        /* Improved button sizing for better touch targets */
+        .btn {
+            padding: 0.5rem 1rem;
+            font-size: var(--btn-font-size);
+            min-height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .progress {
+            height: 4px;
+        }
+
+        .modal-content {
+            border-radius: 12px;
+        }
+
+        .modal-header {
+            padding: 0.75rem 1rem;
+        }
+
+        .modal-body {
+            padding: 1rem;
+        }
+
+        .modal-body h4 {
+            font-size: calc(var(--header-font-size) + 0.1rem);
+            margin-bottom: 0.75rem;
+        }
+
+        .modal-body p {
+            font-size: var(--main-font-size);
+        }
+
+        .trophy-icon {
+            font-size: 40px;
+            color: #ffc107;
+        }
+
+        .score-detail {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 8px;
+            margin: 8px 0;
+            font-size: calc(var(--main-font-size) - 0.15rem);
+        }
+
+        .mb-3 {
+            margin-bottom: 0.75rem !important;
+        }
+
+        .mt-4 {
+            margin-top: 0.75rem !important;
+        }
+
+        /* More specific breakpoints for better scaling */
+        @media (max-width: 414px) {
+            .game-header .d-flex.align-items-center {
+                flex-wrap: wrap;
+            }
+
+            .game-header .me-4 {
+                margin-right: 0.4rem !important;
+                font-size: 0.85rem;
+            }
+
+            .btn {
+                padding: 0.4rem 0.8rem;
+            }
+
+            .blank-input {
+                width: min(120px, 35vw);
+                font-size: 0.85rem;
+            }
+
+            .d-flex.justify-content-between {
+                gap: 5px;
+            }
+
+            .btn-sm {
+                padding: 0.25rem 0.5rem;
+                font-size: 0.75rem;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .game-header h4 {
+                font-size: 0.95rem;
+                max-width: 40vw;
+            }
+
+            .game-header .me-4 {
+                margin-right: 0.3rem !important;
+                font-size: 0.8rem;
+            }
+
+            .blank-input {
+                width: min(100px, 30vw);
+                padding: 4px;
+                font-size: 0.8rem;
+            }
+
+            .btn {
+                padding: 0.35rem 0.7rem;
+                font-size: 0.8rem;
+                min-height: 35px;
+            }
+
+            .question-text {
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 320px) {
+            .game-header .me-4 {
+                margin-right: 0.2rem !important;
+                font-size: 0.75rem;
+            }
+
+            .blank-input {
+                width: min(80px, 25vw);
+            }
+
+            .container {
+                padding-left: 3px !important;
+                padding-right: 3px !important;
+            }
+
+            .question-card {
+                padding: 8px;
+            }
         }
     </style>
 </head>

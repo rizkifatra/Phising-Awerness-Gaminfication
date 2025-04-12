@@ -10,7 +10,7 @@
     <style>
         .header {
             background-color: #28a745;
-            padding: 1.25rem 1.5rem;
+            padding: 1.5rem 1.75rem;
             color: white;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
             position: fixed;
@@ -18,14 +18,23 @@
             left: 0;
             right: 0;
             z-index: 1000;
+            height: 65px;
+            /* Fixed height for consistency */
+            display: flex;
+            align-items: center;
+        }
+
+        .header h4 {
+            font-size: 1.6rem;
+            font-weight: 600;
         }
 
         .profile-btn {
             background: transparent;
             border: 1px solid white;
             color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
+            padding: 0.7rem 1.2rem;
+            border-radius: 10px;
             transition: all 0.3s ease;
         }
 
@@ -40,47 +49,50 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding-top: 85px;
-            padding-bottom: 30px;
-            padding-left: 20px;
-            padding-right: 20px;
+            padding-top: 80px !important;
+            /* Increased from 65px */
+            padding-bottom: 20px;
+            /* Further reduced from 30px */
+            padding-left: 10px;
+            /* Further reduced from 15px */
+            padding-right: 10px;
+            /* Further reduced from 15px */
             background-color: #f8f9fa;
         }
 
         .welcome-text {
             color: #28a745;
-            font-size: 2rem;
-            margin-bottom: 2.5rem;
+            font-size: 2.3rem;
+            margin-bottom: 1.5rem;
+            /* Further reduced from 2rem */
             text-align: center;
-            padding: 0 25px;
+            padding: 0 10px;
+            /* Further reduced from 20px */
+            font-weight: 600;
         }
 
         .action-btn {
-            width: 250px;
-            padding: 1.25rem 1.5rem;
-            margin: 0.75rem;
+            width: 300px;
+            padding: 1.1rem 1.25rem;
+            /* Further reduced from 1.25rem 1.5rem */
+            margin: 0.5rem;
+            /* Further reduced from 0.75rem */
             border: none;
-            border-radius: 10px;
+            border-radius: 12px;
             background-color: #28a745;
             color: white;
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             transition: all 0.3s ease;
-        }
-
-        .action-btn:hover {
-            background-color: #218838;
-            transform: translateY(-3px);
-            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.2);
         }
 
         .profile-btn {
             background: none;
             border: none;
-            padding: 0.5rem;
+            padding: 0.7rem;
         }
 
         .profile-btn i {
-            font-size: 2rem;
+            font-size: 2.2rem;
             color: white;
             transition: transform 0.3s ease;
         }
@@ -90,37 +102,69 @@
         }
 
         .logo {
-            max-width: 150px;
-            margin-bottom: 2rem;
+            max-width: 180px;
+            margin-bottom: 1.25rem;
+            /* Further reduced from 1.75rem */
+        }
+
+        .bi {
+            font-size: 1.4rem;
+            margin-right: 10px;
+        }
+
+        /* Fixes for excessive horizontal margins */
+        .container {
+            padding-left: 10px !important;
+            padding-right: 10px !important;
+            max-width: 100% !important;
+        }
+
+        .main-container {
+            padding-left: 5px !important;
+            padding-right: 5px !important;
+        }
+
+        .action-btn {
+            margin-left: 5px !important;
+            margin-right: 5px !important;
+            width: calc(100% - 10px) !important;
+            max-width: 300px !important;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding-left: 5px !important;
+                padding-right: 5px !important;
+            }
         }
 
         /* Mobile responsiveness improvements */
         @media (max-width: 767px) {
             .header {
-                padding: 1rem 1.25rem;
+                padding: 1.25rem 1.5rem;
             }
 
             .action-btn {
                 width: 90%;
-                max-width: 300px;
-                padding: 1rem 0.75rem;
-                font-size: 1.1rem;
-                margin: 0.6rem;
+                max-width: 320px;
+                padding: 1.25rem 1rem;
+                font-size: 1.2rem;
+                margin: 0.8rem;
             }
 
             .welcome-text {
-                padding: 0 15px;
-                margin-bottom: 2rem;
-                font-size: 1.7rem;
+                padding: 0 20px;
+                margin-bottom: 2.5rem;
+                font-size: 2rem;
             }
 
             .logo {
-                max-width: 120px;
-                margin-bottom: 1.5rem;
+                max-width: 150px;
+                margin-bottom: 2rem;
             }
 
             .header h4 {
-                font-size: 1.2rem;
+                font-size: 1.4rem;
             }
         }
 
@@ -185,6 +229,17 @@
                 padding: 0.6rem;
             }
         }
+
+        /* Add styles to prevent body from having bounce effect on iOS */
+        html,
+        body {
+            overscroll-behavior-y: none;
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            font-size: 18px;
+        }
     </style>
 </head>
 
@@ -223,6 +278,40 @@
     <script>
         document.getElementById('profileButton').addEventListener('click', () => {
             window.location.href = 'profile.html';
+        });
+
+        // Prevent scrolling above the top boundary
+        document.addEventListener('DOMContentLoaded', function () {
+            let lastScrollTop = 0;
+
+            document.addEventListener('scroll', function () {
+                const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+                // If trying to scroll up when already at the top
+                if (scrollTop < lastScrollTop && scrollTop <= 0) {
+                    window.scrollTo(0, 0);
+                }
+
+                lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+            }, { passive: false });
+
+            // For touch devices
+            document.addEventListener('touchmove', function (e) {
+                const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                if (scrollTop <= 0) {
+                    const touch = e.touches[0];
+                    // If trying to scroll up (moving finger down) when at the top
+                    if (touch.clientY > lastTouch) {
+                        e.preventDefault();
+                    }
+                }
+                lastTouch = e.touches[0].clientY;
+            }, { passive: false });
+
+            let lastTouch = 0;
+            document.addEventListener('touchstart', function (e) {
+                lastTouch = e.touches[0].clientY;
+            }, { passive: true });
         });
     </script>
 </body>

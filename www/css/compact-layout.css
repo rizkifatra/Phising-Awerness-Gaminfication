@@ -1,0 +1,33 @@
+/* Compact container with reduced horizontal margins */
+.container {
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+    max-width: 100% !important;
+}
+
+/* For inner content containers */
+.content-inner {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding-left: 5px !important;
+    padding-right: 5px !important;
+}
+
+/* More compact game cards and elements */
+.game-container,
+.question-card,
+.puzzle-container,
+.profile-section {
+    padding-left: 15px !important;
+    padding-right: 15px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+}
+
+/* For mobile specifically */
+@media (max-width: 768px) {
+    .container {
+        padding-left: 5px !important;
+        padding-right: 5px !important;
+    }
+}

@@ -1,0 +1,13 @@
+# Deny access to PHP files in this directory
+
+<FilesMatch "\.php$">
+Order allow,deny
+Deny from all
+</FilesMatch>
+
+# Allow image files
+
+<FilesMatch "\.(?i:jpe?g|png|gif)$">
+Order deny,allow
+Allow from all
+</FilesMatch>
