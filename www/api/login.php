@@ -34,17 +34,19 @@ try {
         $_SESSION['name'] = $user['name'];
         $_SESSION['email'] = $user['email'];
         $_SESSION['score'] = $user['score'] ?? 0;
-        $_SESSION['high_score'] = $user['high_score'];
+        $_SESSION['high_score'] = $user['high_score'] ?? 0;
+        $_SESSION['is_admin'] = $user['is_admin'] ?? 0;
 
         echo json_encode([
             'success' => true,
             'message' => 'Login successful',
+            'isAdmin' => (bool)($user['is_admin'] ?? 0),
             'user' => [
                 'id' => $user['id'],
                 'name' => $user['name'],
                 'email' => $user['email'],
                 'score' => $user['score'] ?? 0,
-                'high_score' => $user['high_score']
+                'high_score' => $user['high_score'] ?? 0
             ]
         ]);
     } else {
