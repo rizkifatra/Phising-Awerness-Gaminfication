@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Management - Admin Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        /* Prevent overscroll bounce effect */
+        html,
+        body {
+            overscroll-behavior-y: none;
+            width: 100%;
+            height: 100%;
+            overflow-x: hidden;
+            font-size: 16px;
+        }
+
+        body {
+            background-color: #f8f9fa;
+        }
+
+        /* Admin Header */
+        .admin-header {
+            background-color: #343a40;
+            padding: 1rem;
+            color: white;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            height: auto;
+            display: flex;
+            align-items: center;
+        }
+
+        .admin-header h4 {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 0;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            top: 60px;
+            left: 0;
+            width: 250px;
+            height: calc(100vh - 60px);
+            background-color: #343a40;
+            padding-top: 20px;
+            transition: all 0.3s;
+            z-index: 999;
+        }
+
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            padding: 10px 20px;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .sidebar-link:hover,
+        .sidebar-link.active {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .sidebar-link i {
+            margin-right: 10px;
+            font-size: 1.1rem;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 250px;
+            padding: 80px 20px 20px;
+            min-height: 100vh;
+        }
+
+        /* Panel Card */
+        .panel-card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        /* Table styling */
+        .table-responsive {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+
+        .table {
+            margin-bottom: 0;
+        }
+
+        .btn-sm {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+        }
+
+        /* Toggle Button for Small Screens */
+        .sidebar-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* Search and filter bar */
+        .search-filter {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        /* Modal customization */
+        .modal-header {
+            background-color: #343a40;
+            color: white;
+        }
+
+        .modal-footer {
+            border-top: 1px solid #dee2e6;
+            padding: 1rem;
+        }
+
+        /* Status badges */
+        .badge-verified {
+            background-color: #28a745;
+        }
+
+        .badge-unverified {
+            background-color: #dc3545;
+        }
+
+        .badge-admin {
+            background-color: #007bff;
+        }
+
+        /* For Mobile Devices */
+        @media (max-width: 767.98px) {
+            .sidebar {
+                transform: translateX(-100%);
+                width: 200px;
+            }
+
+            .sidebar.show {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 80px 10px 20px;
+            }
+
+            .sidebar-toggle {
+                display: block;
+            }
+
+            .admin-header h4 {
+                font-size: 1.2rem;
+            }
+
+            .search-filter {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Admin Header -->
+    <div class="admin-header">
+        <div class="container-fluid d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center">
+                <button class="sidebar-toggle me-3" id="sidebarToggle">
+                    <i class="bi bi-list"></i>
+                </button>
+                <h4 class="mb-0">User Management</h4>
+            </div>
+            <div>
+                <button class="btn btn-outline-light btn-sm" id="logoutBtn">
+                    <i class="bi bi-box-arrow-right me-1"></i> Logout
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <a href="home.html" class="sidebar-link">
+            <i class="bi bi-speedometer2"></i> Dashboard
+        </a>
+        <a href="users.html" class="sidebar-link active">
+            <i class="bi bi-people"></i> Users
+        </a>
+        <a href="questions.html" class="sidebar-link">
+            <i class="bi bi-question-circle"></i> Questions
+        </a>
+        <a href="games.html" class="sidebar-link">
+            <i class="bi bi-controller"></i> Games
+        </a>
+        <a href="scores.html" class="sidebar-link">
+            <i class="bi bi-trophy"></i> Scores
+        </a>
+        <a href="settings.html" class="sidebar-link">
+            <i class="bi bi-gear"></i> Settings
+        </a>
+        <a href="../home.html" class="sidebar-link">
+            <i class="bi bi-arrow-left-circle"></i> Back to App
+        </a>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="container-fluid">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2>Manage Users</h2>
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addUserModal">
+                    <i class="bi bi-person-plus me-1"></i> Add New User
+                </button>
+            </div>
+
+            <!-- Search and Filter -->
+            <div class="panel-card">
+                <div class="search-filter">
+                    <div class="flex-grow-1">
+                        <input type="text" id="searchInput" class="form-control" placeholder="Search by name or email">
+                    </div>
+                    <div>
+                        <select id="filterRole" class="form-select">
+                            <option value="">All Roles</option>
+                            <option value="1">Admin</option>
+                            <option value="0">Regular User</option>
+                        </select>
+                    </div>
+                    <div>
+                        <select id="filterVerified" class="form-select">
+                            <option value="">All Status</option>
+                            <option value="1">Verified</option>
+                            <option value="0">Unverified</option>
+                        </select>
+                    </div>
+                    <div>
+                        <button id="searchBtn" class="btn btn-primary">
+                            <i class="bi bi-search"></i> Search
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Users Table -->
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Score</th>
+                            <th>Status</th>
+                            <th>Role</th>
+                            <th>Registered</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="usersTableBody">
+                        <tr>
+                            <td colspan="8" class="text-center">Loading users...</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <!-- Pagination -->
+                <div class="d-flex justify-content-between align-items-center mt-3">
+                    <div>
+                        <span id="showing-entries">Showing 0 to 0 of 0 entries</span>
+                    </div>
+                    <div>
+                        <nav aria-label="Page navigation">
+                            <ul class="pagination mb-0" id="pagination">
+                                <!-- Pagination links will be generated here -->
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add User Modal -->
+    <div class="modal fade" id="addUserModal" tabindex="-1" aria-labelledby="addUserModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addUserModalLabel">Add New User</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addUserForm">
+                        <div class="mb-3">
+                            <label for="addName" class="form-label">Name</label>
+                            <input type="text" class="form-control" id="addName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="addEmail" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="addEmail" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="addPassword" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="addPassword" required>
+                        </div>
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="addIsAdmin">
+                            <label class="form-check-label" for="addIsAdmin">Make Admin</label>
+                        </div>
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="addIsVerified">
+                            <label class="form-check-label" for="addIsVerified">Mark as Verified</label>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="saveNewUserBtn">Save User</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit User Modal -->
+    <div class="modal fade" id="editUserModal" tabindex="-1" aria-labelledby="editUserModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editUserModalLabel">Edit User</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editUserForm">
+                        <input type="hidden" id="editUserId">
+                        <div class="mb-3">
+                            <label for="editName" class="form-label">Name</label>
+                            <input type="text" class="form-control" id="editName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editEmail" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="editEmail" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editScore" class="form-label">Score</label>
+                            <input type="number" class="form-control" id="editScore" required>
+                        </div>
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="editIsAdmin">
+                            <label class="form-check-label" for="editIsAdmin">Admin</label>
+                        </div>
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="editIsVerified">
+                            <label class="form-check-label" for="editIsVerified">Verified</label>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="saveEditUserBtn">Save Changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Global variables for pagination
+        let currentPage = 1;
+        const itemsPerPage = 10;
+        let totalUsers = 0;
+        let currentUsers = [];
+
+        document.addEventListener('DOMContentLoaded', function () {
+            // Toggle sidebar on mobile
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            const sidebar = document.getElementById('sidebar');
+
+            sidebarToggle.addEventListener('click', function () {
+                sidebar.classList.toggle('show');
+            });
+
+            // Close sidebar when clicking outside on mobile
+            document.addEventListener('click', function (event) {
+                const isClickInsideSidebar = sidebar.contains(event.target);
+                const isClickOnToggle = sidebarToggle.contains(event.target);
+
+                if (!isClickInsideSidebar && !isClickOnToggle && sidebar.classList.contains('show')) {
+                    sidebar.classList.remove('show');
+                }
+            });
+
+            // Logout functionality
+            document.getElementById('logoutBtn').addEventListener('click', async function () {
+                try {
+                    const response = await fetch('../api/logout.php', {
+                        method: 'POST',
+                        credentials: 'include'
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        window.location.href = '../index.html';
+                    } else {
+                        alert('Logout failed: ' + data.message);
+                    }
+                } catch (error) {
+                    console.error('Logout error:', error);
+                    alert('An error occurred during logout. You will be redirected to the login page.');
+                    window.location.href = '../index.html';
+                }
+            });
+
+            // Check admin authentication
+            checkAdminAuth();
+
+            // Load users
+            loadUsers();
+
+            // Set up search button
+            document.getElementById('searchBtn').addEventListener('click', function () {
+                loadUsers();
+            });
+
+            // Set up add user form submission
+            document.getElementById('saveNewUserBtn').addEventListener('click', addUser);
+
+            // Set up edit user form submission
+            document.getElementById('saveEditUserBtn').addEventListener('click', updateUser);
+        });
+
+        // Function to verify admin authentication
+        async function checkAdminAuth() {
+            try {
+                const response = await fetch('../api/check_admin.php', {
+                    method: 'GET',
+                    credentials: 'include'
+                });
+
+                const data = await response.json();
+
+                if (!data.success || !data.isAdmin) {
+                    // If not admin or not logged in, redirect to login
+                    window.location.href = '../index.html';
+                }
+            } catch (error) {
+                console.error('Auth check error:', error);
+                // On error, redirect to login for safety
+                window.location.href = '../index.html';
+            }
+        }
+
+        // Function to load users
+        async function loadUsers() {
+            const tableBody = document.getElementById('usersTableBody');
+            tableBody.innerHTML = '<tr><td colspan="8" class="text-center"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></td></tr>';
+
+            try {
+                // Get filter values
+                const searchTerm = document.getElementById('searchInput').value;
+                const filterRole = document.getElementById('filterRole').value;
+                const filterVerified = document.getElementById('filterVerified').value;
+
+                const response = await fetch(`../api/admin_get_users.php?page=${currentPage}&limit=${itemsPerPage}&search=${searchTerm}&role=${filterRole}&verified=${filterVerified}`, {
+                    method: 'GET',
+                    credentials: 'include'
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch users');
+                }
+
+                const data = await response.json();
+
+                if (data.success) {
+                    totalUsers = data.total;
+                    currentUsers = data.users;
+
+                    // Update showing entries text
+                    const start = (currentPage - 1) * itemsPerPage + 1;
+                    const end = Math.min(start + itemsPerPage - 1, totalUsers);
+                    document.getElementById('showing-entries').textContent = `Showing ${totalUsers > 0 ? start : 0} to ${end} of ${totalUsers} entries`;
+
+                    // Create pagination
+                    createPagination();
+
+                    // Render users
+                    renderUsers(data.users);
+                } else {
+                    tableBody.innerHTML = `<tr><td colspan="8" class="text-center">${data.message || 'No users found'}</td></tr>`;
+                }
+            } catch (error) {
+                console.error('Error loading users:', error);
+                tableBody.innerHTML = `<tr><td colspan="8" class="text-center text-danger">Error: ${error.message}</td></tr>`;
+            }
+        }
+
+        // Function to render users
+        function renderUsers(users) {
+            const tableBody = document.getElementById('usersTableBody');
+            tableBody.innerHTML = '';
+
+            if (!users || users.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="8" class="text-center">No users found</td></tr>';
+                return;
+            }
+
+            users.forEach(user => {
+                const row = document.createElement('tr');
+
+                // Format date
+                const created = new Date(user.created_at);
+                const formattedDate = created.toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric'
+                });
+
+                // Status badge
+                const verifiedBadge = user.is_verified == 1
+                    ? '<span class="badge bg-success">Verified</span>'
+                    : '<span class="badge bg-danger">Unverified</span>';
+
+                // Role badge
+                const roleBadge = user.is_admin == 1
+                    ? '<span class="badge bg-primary">Admin</span>'
+                    : '<span class="badge bg-secondary">User</span>';
+
+                row.innerHTML = `
+                    <td>${user.id}</td>
+                    <td>${user.name}</td>
+                    <td>${user.email}</td>
+                    <td>${user.score}</td>
+                    <td>${verifiedBadge}</td>
+                    <td>${roleBadge}</td>
+                    <td>${formattedDate}</td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-primary me-1" onclick="editUser(${user.id})">
+                            <i class="bi bi-pencil"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger" onclick="deleteUser(${user.id})">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </td>
+                `;
+
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Function to create pagination
+        function createPagination() {
+            const pagination = document.getElementById('pagination');
+            pagination.innerHTML = '';
+
+            const totalPages = Math.ceil(totalUsers / itemsPerPage);
+
+            // Previous button
+            const prevLi = document.createElement('li');
+            prevLi.className = `page-item ${currentPage === 1 ? 'disabled' : ''}`;
+            prevLi.innerHTML = `<a class="page-link" href="#" onclick="changePage(${currentPage - 1})">Previous</a>`;
+            pagination.appendChild(prevLi);
+
+            // Page numbers
+            let startPage = Math.max(1, currentPage - 2);
+            let endPage = Math.min(totalPages, startPage + 4);
+
+            if (endPage - startPage < 4) {
+                startPage = Math.max(1, endPage - 4);
+            }
+
+            for (let i = startPage; i <= endPage; i++) {
+                const li = document.createElement('li');
+                li.className = `page-item ${i === currentPage ? 'active' : ''}`;
+                li.innerHTML = `<a class="page-link" href="#" onclick="changePage(${i})">${i}</a>`;
+                pagination.appendChild(li);
+            }
+
+            // Next button
+            const nextLi = document.createElement('li');
+            nextLi.className = `page-item ${currentPage === totalPages ? 'disabled' : ''}`;
+            nextLi.innerHTML = `<a class="page-link" href="#" onclick="changePage(${currentPage + 1})">Next</a>`;
+            pagination.appendChild(nextLi);
+        }
+
+        // Function to change page
+        function changePage(page) {
+            if (page < 1 || page > Math.ceil(totalUsers / itemsPerPage)) {
+                return;
+            }
+
+            currentPage = page;
+            loadUsers();
+        }
+
+        // Function to add user
+        async function addUser() {
+            const nameInput = document.getElementById('addName');
+            const emailInput = document.getElementById('addEmail');
+            const passwordInput = document.getElementById('addPassword');
+            const isAdminInput = document.getElementById('addIsAdmin');
+            const isVerifiedInput = document.getElementById('addIsVerified');
+
+            // Validate form
+            if (!nameInput.value || !emailInput.value || !passwordInput.value) {
+                alert('Please fill all required fields');
+                return;
+            }
+
+            try {
+                const response = await fetch('../api/admin_add_user.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        name: nameInput.value,
+                        email: emailInput.value,
+                        password: passwordInput.value,
+                        is_admin: isAdminInput.checked ? 1 : 0,
+                        is_verified: isVerifiedInput.checked ? 1 : 0
+                    }),
+                    credentials: 'include'
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    alert('User added successfully');
+
+                    // Reset form
+                    nameInput.value = '';
+                    emailInput.value = '';
+                    passwordInput.value = '';
+                    isAdminInput.checked = false;
+                    isVerifiedInput.checked = false;
+
+                    // Close modal
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('addUserModal'));
+                    modal.hide();
+
+                    // Reload users
+                    loadUsers();
+                } else {
+                    alert(`Failed to add user: ${data.message}`);
+                }
+            } catch (error) {
+                console.error('Error adding user:', error);
+                alert(`Error adding user: ${error.message}`);
+            }
+        }
+
+        // Function to prepare edit user form
+        function editUser(userId) {
+            const user = currentUsers.find(u => u.id == userId);
+
+            if (!user) {
+                alert('User not found');
+                return;
+            }
+
+            document.getElementById('editUserId').value = user.id;
+            document.getElementById('editName').value = user.name;
+            document.getElementById('editEmail').value = user.email;
+            document.getElementById('editScore').value = user.score;
+            document.getElementById('editIsAdmin').checked = user.is_admin == 1;
+            document.getElementById('editIsVerified').checked = user.is_verified == 1;
+
+            // Show modal
+            const modal = new bootstrap.Modal(document.getElementById('editUserModal'));
+            modal.show();
+        }
+
+        // Function to update user
+        async function updateUser() {
+            const userId = document.getElementById('editUserId').value;
+            const name = document.getElementById('editName').value;
+            const email = document.getElementById('editEmail').value;
+            const score = document.getElementById('editScore').value;
+            const isAdmin = document.getElementById('editIsAdmin').checked ? 1 : 0;
+            const isVerified = document.getElementById('editIsVerified').checked ? 1 : 0;
+
+            // Validate form
+            if (!name || !email) {
+                alert('Please fill all required fields');
+                return;
+            }
+
+            try {
+                const response = await fetch('../api/admin_update_user.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        id: userId,
+                        name: name,
+                        email: email,
+                        score: score,
+                        is_admin: isAdmin,
+                        is_verified: isVerified
+                    }),
+                    credentials: 'include'
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    alert('User updated successfully');
+
+                    // Close modal
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('editUserModal'));
+                    modal.hide();
+
+                    // Reload users
+                    loadUsers();
+                } else {
+                    alert(`Failed to update user: ${data.message}`);
+                }
+            } catch (error) {
+                console.error('Error updating user:', error);
+                alert(`Error updating user: ${error.message}`);
+            }
+        }
+
+        // Function to delete user
+        async function deleteUser(userId) {
+            if (!confirm(`Are you sure you want to delete user with ID ${userId}?`)) {
+                return;
+            }
+
+            try {
+                const response = await fetch('../api/admin_delete_user.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        id: userId
+                    }),
+                    credentials: 'include'
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    alert('User deleted successfully');
+
+                    // Reload users
+                    loadUsers();
+                } else {
+                    alert(`Failed to delete user: ${data.message}`);
+                }
+            } catch (error) {
+                console.error('Error deleting user:', error);
+                alert(`Error deleting user: ${error.message}`);
+            }
+        }
+    </script>
+</body>
+
+</html>
