@@ -5,139 +5,215 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login Page</title>
-    <link rel="stylesheet" href="login.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <script defer src="script.js"></script>
     <style>
         /* Prevent overscroll bounce effect */
         html,
         body {
+            font-size: 16px;
             overscroll-behavior-y: none;
             width: 100%;
             height: 100%;
             overflow-x: hidden;
-            font-size: 18px;
-            /* Increased base font size */
-        }
-
-        /* Reset and Global Styles */
-        * {
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
+        }
+
+        /* Fluid typography that scales with viewport width */
+        :root {
+            --main-font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+            --header-font-size: clamp(1rem, 3vw, 1.3rem);
+            --item-font-size: clamp(0.85rem, 2.5vw, 1rem);
+            --btn-font-size: clamp(0.85rem, 2.5vw, 1rem);
         }
 
         body {
             font-family: 'Inter', sans-serif;
+            background-color: #f4f7fa;
             display: flex;
-            justify-content: center;
-            align-items: center;
-            background-color: #f9f9f9;
-            height: 100vh;
-            margin: 0;
+            flex-direction: column;
+            min-height: 100vh;
             color: #212529;
         }
 
-        /* Login Card Container */
-        .login-card {
+        /* Header styling optimized for mobile */
+        .game-header {
+            background: linear-gradient(145deg, #28a745, #20c997);
+            color: white;
+            padding: 0.85rem 0;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            height: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             width: 100%;
-            max-width: 450px;
-            /* Increased width */
-            background-color: #ffffff;
-            border-radius: 18px;
-            /* Rounder corners */
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
-            /* Enhanced shadow */
-            padding: 30px;
-            /* More padding */
-            text-align: center;
         }
 
-        /* Fixes for excessive horizontal margins */
-        .login-card {
-            margin-left: 10px !important;
-            margin-right: 10px !important;
-            width: calc(100% - 20px) !important;
-            max-width: 450px !important;
+        .game-header h4 {
+            font-size: var(--header-font-size);
+            font-weight: 600;
+            margin-bottom: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 70vw;
         }
 
-        @media (max-width: 576px) {
-            .login-card {
-                margin-left: 5px !important;
-                margin-right: 5px !important;
-                width: calc(100% - 10px) !important;
-                padding-left: 15px !important;
-                padding-right: 15px !important;
+        .content-container {
+            padding-top: 85px !important;
+            padding-bottom: 20px;
+            width: 100%;
+            max-width: 100%;
+            margin: 0 auto;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Progress bar with animation */
+        .progress {
+            height: 4px;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            animation: progressAnimation 2s ease-in-out;
+        }
+
+        @keyframes progressAnimation {
+            from {
+                width: 0;
+            }
+
+            to {
+                width: 100%;
             }
         }
 
-        /* Logo Styles */
+        /* Logo animation */
         .logo-container {
-            margin-bottom: 25px;
-        }
-
-        .logo {
-            height: 50px;
-            /* Larger logo */
-        }
-
-        /* Title and Subtitle */
-        .title {
-            font-size: 28px;
-            /* Larger title */
-            font-weight: 700;
             margin-bottom: 15px;
-            color: #212529;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
         }
 
-        .subtitle {
-            font-size: 18px;
-            /* Larger subtitle */
-            color: #6c757d;
-            margin-bottom: 25px;
+        .app-logo {
+            height: 70px;
+            width: auto;
+            margin-bottom: 10px;
+            animation: logoFloat 3s ease-in-out infinite;
+        }
+
+        @keyframes logoFloat {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .login-card {
+            width: 100%;
+            max-width: 450px;
+            background-color: #ffffff;
+            border-radius: 18px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+            padding: 30px;
             text-align: center;
         }
 
-        /* Login Form Styles */
-        .login-form {
-            display: flex;
-            flex-direction: column;
+        .title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: #28a745;
+        }
+
+        .subtitle {
+            font-size: var(--item-font-size);
+            color: #6c757d;
             margin-bottom: 25px;
         }
 
         .input-group {
-            margin-bottom: 20px;
-            /* More spacing */
+            margin-bottom: 25px;
+            text-align: left;
         }
 
         .input-group label {
-            font-size: 16px;
-            /* Larger label */
+            font-size: var(--item-font-size);
             font-weight: 500;
             color: #212529;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
             display: block;
         }
 
+        /* Input Icon Wrapper */
+        .input-icon-wrapper {
+            position: relative;
+            width: 100%;
+        }
+
+        /* Input Icon */
+        .input-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6c757d;
+            font-size: 1.2rem;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        /* Input field */
         .input-group input {
             width: 100%;
-            padding: 15px;
-            /* More padding */
-            font-size: 16px;
+            padding: 15px 15px 15px 45px;
+            font-size: var(--item-font-size);
             border: 1px solid #e0e0e0;
             border-radius: 10px;
-            /* Rounder corners */
             background-color: #ffffff;
             color: #212529;
+            transition: all 0.2s ease;
+            height: 54px;
         }
 
-        .input-group input:focus {
-            border-color: #28a745;
-            outline: none;
-            background-color: #f1f9ff;
+        /* Mobile optimizations */
+        @media (max-width: 480px) {
+            .input-group {
+                margin-bottom: 22px;
+            }
+
+            .input-group label {
+                margin-bottom: 8px;
+            }
+
+            .input-icon {
+                font-size: 1.1rem;
+            }
+
+            .input-group input {
+                font-size: 16px;
+                /* Prevents iOS zoom on focus */
+            }
         }
 
-        /* Password Wrapper */
         .password-wrapper {
             position: relative;
         }
@@ -146,63 +222,81 @@
             position: absolute;
             top: 50%;
             right: 15px;
-            /* Adjusted position */
             transform: translateY(-50%);
             background: none;
             border: none;
-            font-size: 1.4rem;
-            /* Larger icon */
-            padding: 10px;
+            font-size: 20px;
             cursor: pointer;
             color: #28a745;
+            padding: 5px;
+            z-index: 10;
         }
 
-        /* Forgot Password Link */
         .forgot-password {
             text-align: right;
-            font-size: 16px;
-            /* Larger text */
+            font-size: var(--item-font-size);
             color: #28a745;
             text-decoration: none;
             margin-bottom: 25px;
+            display: block;
+            transition: all 0.2s ease;
         }
 
         .forgot-password:hover {
+            color: #218838;
             text-decoration: underline;
         }
 
-        /* Login Button */
         .login-button {
             width: 100%;
             padding: 15px;
-            /* More padding */
             background-color: #28a745;
             color: #ffffff;
             border: none;
             border-radius: 10px;
-            /* Rounder corners */
-            font-size: 18px;
-            /* Larger text */
+            font-size: var(--btn-font-size);
             font-weight: 600;
             cursor: pointer;
-            transition: background-color 0.3s ease;
-            min-height: 55px;
-            /* Taller button */
+            transition: all 0.3s ease;
+            min-height: 52px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
         }
 
         .login-button:hover {
             background-color: #218838;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.2);
         }
 
-        /* Divider Styles */
+        .login-button:active {
+            transform: translateY(0);
+        }
+
+        /* Alert message styling */
+        .alert-message {
+            display: none;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+            text-align: left;
+        }
+
+        .alert-danger {
+            background-color: #f8d7da;
+            border-left: 4px solid #dc3545;
+            color: #721c24;
+        }
+
         .divider {
             display: flex;
             align-items: center;
             justify-content: center;
             margin: 25px 0;
-            /* More spacing */
-            font-size: 16px;
-            /* Larger text */
+            font-size: var(--item-font-size);
             color: #6c757d;
             position: relative;
         }
@@ -230,16 +324,12 @@
             z-index: 1;
         }
 
-        /* Social Button */
         .social-button {
             width: 100%;
-            padding: 15px;
-            /* More padding */
-            font-size: 16px;
-            /* Larger text */
+            padding: 12px 15px;
+            font-size: var(--item-font-size);
             border: 1px solid #e0e0e0;
             border-radius: 10px;
-            /* Rounder corners */
             background-color: #ffffff;
             color: #212529;
             cursor: pointer;
@@ -248,41 +338,65 @@
             align-items: center;
             justify-content: center;
             gap: 10px;
-            transition: background-color 0.3s ease;
-            min-height: 55px;
-            /* Taller button */
+            transition: all 0.3s ease;
+            min-height: 52px;
+            font-weight: 500;
         }
 
         .social-button:hover {
             background-color: #f8f9fa;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
         }
 
-        .google {
-            color: #28a745;
+        .social-button i {
+            font-size: 1.2rem;
         }
 
-        .facebook {
-            color: #1877f2;
+        .google i {
+            color: #ea4335;
         }
 
-        /* Sign Up Link */
         .signup-text {
-            font-size: 16px;
-            /* Larger text */
+            font-size: var(--item-font-size);
             color: #6c757d;
+            margin-top: 20px;
         }
 
         .signup-link {
             color: #28a745;
             text-decoration: none;
             font-weight: 600;
+            transition: all 0.2s ease;
         }
 
         .signup-link:hover {
+            color: #218838;
             text-decoration: underline;
         }
 
-        /* Updated mobile styles */
+        /* Container settings */
+        .container {
+            padding-left: max(5px, 2vw) !important;
+            padding-right: max(5px, 2vw) !important;
+            max-width: 100% !important;
+            width: 100%;
+        }
+
+        /* Mobile responsiveness */
+        @media (max-width: 576px) {
+            .login-card {
+                margin-left: 15px !important;
+                margin-right: 15px !important;
+                width: calc(100% - 30px) !important;
+                padding: 25px 20px;
+            }
+
+            .title {
+                font-size: 24px;
+            }
+        }
+
         @media (max-width: 480px) {
             body {
                 background-color: #ffffff;
@@ -290,145 +404,300 @@
 
             .login-card {
                 max-width: 100%;
-                margin: 0;
-                padding: 30px 25px;
-                /* Slightly increased padding */
+                margin: 0 !important;
+                padding: 25px 20px;
                 border-radius: 0;
                 box-shadow: none;
-                min-height: 100vh;
+                min-height: calc(100vh - 85px);
             }
 
-            .title {
-                font-size: 28px;
-                /* Consistent with desktop */
-                margin-top: 50px;
-                /* More space at top */
+            .game-header {
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             }
 
-            .input-group input {
-                padding: 16px;
-                /* Slightly larger on mobile */
-                font-size: 18px;
-                background-color: #f8f9fa;
-                border: 1px solid #e0e0e0;
-                margin-bottom: 15px;
+            .app-logo {
+                height: 60px;
+            }
+        }
+
+        /* Fingerprint animation for modern login */
+        .fingerprint {
+            width: 70px;
+            height: 70px;
+            margin: 0 auto 20px;
+            position: relative;
+            border-radius: 50%;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            background: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgdmlld0JveD0iMCAwIDUxMiA1MTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTI1NS45OTkgNDI2LjY2N0MyNTUuOTk5IDQyNi42NjcgMzQxLjMzMyA0MTkuNTU4IDM2Mi42NjYgMzI2LjQwN0MzODQgMjMzLjI1NSAzNjIuNjY2IDEyOCAyNTUuOTk5IDEyOEMxNDkuMzMzIDEyOCAxMjggMjMzLjI1NSAxNDkuMzMzIDMyNi40MDdDMTcwLjY2NiA0MTkuNTU4IDI1NS45OTkgNDI2LjY2NyAyNTUuOTk5IDQyNi42NjdaIiBzdHJva2U9IiMyOEE3NDUiIHN0cm9rZS13aWR0aD0iMTAiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjxwYXRoIGQ9Ik0yNTYgMTcwLjY2N0MyNTYgMTcwLjY2NyAyOTguNjY3IDE3MC42NjcgMzIwIDIyNkMzNDEuMzMzIDI4MS4zMzMgMzIwIDM2Mi42NjcgMjU2IDM4NEMxOTIgMzYyLjY2NyAxNzAuNjY3IDI4MS4zMzMgMTkyIDIyNkMyMTMuMzMzIDE3MC42NjcgMjU2IDE3MC42NjcgMjU2IDE3MC42NjdaIiBzdHJva2U9IiMyOEE3NDUiIHN0cm9rZS13aWR0aD0iMTAiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjxwYXRoIGQ9Ik0yNTYgMjEzLjMzM0MyNTYgMjEzLjMzMyAyNzcuMzMzIDIyNi42NjcgMjc3LjMzMyAyNTZDMjc3LjMzMyAyODUuMzMzIDI1NiAzMjAgMjU2IDMyMCIgc3Ryb2tlPSIjMjhBNzQ1IiBzdHJva2Utd2lkdGg9IjEwIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48cGF0aCBkPSJNMjU2IDMyMEMyNTYgMzIwIDIzNC42NjcgMjg1LjMzMyAyMzQuNjY3IDI1NkMyMzQuNjY3IDIyNi42NjcgMjU2IDIxMy4zMzMgMjU2IDIxMy4zMzMiIHN0cm9rZT0iIzI4QTc0NSIgc3Ryb2tlLXdpZHRoPSIxMCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PC9zdmc+') center/cover no-repeat;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
             }
 
-            .login-button {
-                padding: 16px;
-                font-size: 18px;
-                margin-top: 25px;
+            50% {
+                transform: scale(1.05);
             }
 
-            .social-button {
-                padding: 16px;
-                margin-top: 20px;
-                font-size: 16px;
-            }
-
-            .divider {
-                margin: 35px 0;
+            100% {
+                transform: scale(1);
             }
         }
     </style>
 </head>
 
 <body>
-    <div class="login-card">
-        <div class="logo-container">
-            <!-- <img src="logoipsum.png" alt="Logo" class="logo"> -->
+    <!-- Header with enhanced mobile display -->
+    <div class="game-header">
+        <div class="container d-flex justify-content-center align-items-center">
+            <h4 class="mb-0">
+                <i class="bi bi-shield-lock"></i> Account Login
+            </h4>
         </div>
-        <h1 class="title">Sign in to your Account</h1>
-        <p class="subtitle">Enter your email and password to log in</p>
-        <form class="login-form">
-            <div class="input-group">
-                <label for="email">Email</label>
-                <input type="email" id="email" placeholder="Rizkifatra22@gmail.com" required>
-            </div>
-            <div class="input-group">
-                <label for="password">Password</label>
-                <div class="password-wrapper">
-                    <input type="password" id="password" placeholder="******" required>
-                    <button type="button" class="toggle-password">👁️</button>
-                </div>
-            </div>
-
-
-            <a href="forgot-password.html" class="forgot-password">Forgot Password?</a>
-            <button type="submit" class="login-button">Log In</button>
-        </form>
-        <div class="divider">
-            <span>Or</span>
+        <div class="progress mt-2" style="height: 5px; width: 100%;">
+            <div class="progress-bar bg-warning" style="width: 100%"></div>
         </div>
-        <button class="social-button google">Continue with Google</button>
-        <p class="signup-text">Don’t have an account? <a href="register.html" class="signup-link">Sign Up</a></p>
     </div>
-</body>
 
-<script>
-    document.querySelector('.login-form').addEventListener('submit', async (e) => {
-        e.preventDefault();
+    <div class="container content-container">
+        <div class="login-card">
+            <div class="fingerprint"></div>
 
-        const email = document.getElementById('email').value;
-        const password = document.getElementById('password').value;
+            <h1 class="title">Welcome Back</h1>
+            <p class="subtitle">Sign in to continue to your account</p>
 
-        try {
-            const response = await fetch('api/login.php', {
+            <div id="loginError" class="alert-message alert-danger">
+                Invalid email or password. Please try again.
+            </div>
+
+            <form class="login-form" id="loginForm">
+                <div class="input-group">
+                    <label for="email">Email</label>
+                    <div class="input-icon-wrapper">
+                        <i class="bi bi-envelope input-icon"></i>
+                        <input type="email" id="email" placeholder="youremail@example.com" required
+                            autocomplete="email">
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label for="password">Password</label>
+                    <div class="password-wrapper input-icon-wrapper">
+                        <i class="bi bi-lock input-icon"></i>
+                        <input type="password" id="password" placeholder="••••••••" required
+                            autocomplete="current-password">
+                        <button type="button" class="toggle-password"><i class="bi bi-eye-slash"></i></button>
+                    </div>
+                </div>
+
+                <a href="forgot-password.html" class="forgot-password">Forgot Password?</a>
+                <button type="submit" class="login-button">
+                    <i class="bi bi-box-arrow-in-right"></i> Sign In
+                </button>
+            </form>
+
+            <div class="divider">
+                <span>Or</span>
+            </div>
+            <button class="social-button google">
+                <i class="bi bi-google"></i> Continue with Google
+            </button>
+            <p class="signup-text">Don't have an account? <a href="register.html" class="signup-link">Sign Up</a></p>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            // Add loading state
+            const button = document.querySelector('.login-button');
+            button.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Signing In...';
+            button.disabled = true;
+
+            // Hide any previous error
+            document.getElementById('loginError').style.display = 'none';
+
+            try {
+                const response = await fetch('api/login.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        email: email,
+                        password: password
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // Check if user is admin and redirect accordingly
+                    if (data.isAdmin) {
+                        window.location.href = 'admin/homeAdmin.html';
+                    } else {
+                        window.location.href = 'home.html';
+                    }
+                } else {
+                    // Handle login error
+                    document.getElementById('loginError').textContent = data.message || 'Invalid email or password';
+                    document.getElementById('loginError').style.display = 'block';
+
+                    // Reset button
+                    button.innerHTML = '<i class="bi bi-box-arrow-in-right"></i> Sign In';
+                    button.disabled = false;
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                document.getElementById('loginError').textContent = 'A network error occurred. Please try again.';
+                document.getElementById('loginError').style.display = 'block';
+
+                // Reset button
+                button.innerHTML = '<i class="bi bi-box-arrow-in-right"></i> Sign In';
+                button.disabled = false;
+            }
+        });
+
+        // Password visibility toggle
+        document.querySelector('.toggle-password').addEventListener('click', function () {
+            const passwordInput = document.getElementById('password');
+            const eyeIcon = this.querySelector('i');
+
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                eyeIcon.classList.remove('bi-eye-slash');
+                eyeIcon.classList.add('bi-eye');
+            } else {
+                passwordInput.type = 'password';
+                eyeIcon.classList.remove('bi-eye');
+                eyeIcon.classList.add('bi-eye-slash');
+            }
+        });
+
+        // Focus effects for input fields
+        document.querySelectorAll('.input-group input').forEach(input => {
+            input.addEventListener('focus', function () {
+                this.parentElement.parentElement.style.color = '#28a745';
+            });
+
+            input.addEventListener('blur', function () {
+                this.parentElement.parentElement.style.color = '';
+            });
+        });
+
+        // Google Sign In setup
+        document.addEventListener('DOMContentLoaded', function () {
+            // Add Google Sign-In script
+            const googleScript = document.createElement('script');
+            googleScript.src = 'https://accounts.google.com/gsi/client';
+            googleScript.async = true;
+            googleScript.defer = true;
+            document.head.appendChild(googleScript);
+
+            // Initialize Google Sign-In once the script is loaded
+            googleScript.onload = function () {
+                google.accounts.id.initialize({
+                    client_id: '187258324052-l53dk7e9d26sbvtshf11ijca5t3kgdtd.apps.googleusercontent.com', // Replace with your Google Client ID
+                    callback: handleGoogleLogin,
+                    auto_select: false
+                });
+
+                // Attach click handler to Google button
+                document.querySelector('.social-button.google').addEventListener('click', function () {
+                    google.accounts.id.prompt();
+                });
+            };
+        });
+
+        // Handle Google Login
+        function handleGoogleLogin(response) {
+            if (!response.credential) {
+                console.error("Google login failed: No credential received");
+                document.getElementById('loginError').textContent = 'Google login failed. Please try again.';
+                document.getElementById('loginError').style.display = 'block';
+                return;
+            }
+
+            // Add loading state to Google button
+            const googleButton = document.querySelector('.social-button.google');
+            const originalText = googleButton.innerHTML;
+            googleButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Signing in...';
+            googleButton.disabled = true;
+
+            // Hide any previous error
+            document.getElementById('loginError').style.display = 'none';
+
+            // Send the token to your backend
+            fetch('api/google-login.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ email, password }),
-                credentials: 'include'
-            });
-
-            const data = await response.json();
-            console.log('Login response:', data); // Debug line
-
-            if (data.success) {
-                window.location.href = 'home.html';
-            } else {
-                // Show more detailed error message
-                alert(`Login failed: ${data.message}\n\nPlease check your email and password.`);
-            }
-        } catch (error) {
-            console.error('Login error:', error);
-            alert('An error occurred during login. Please try again.');
-        }
-    });
-
-    // Password visibility toggle
-    document.querySelector('.toggle-password').addEventListener('click', function () {
-        const passwordInput = document.getElementById('password');
-        if (passwordInput.type === 'password') {
-            passwordInput.type = 'text';
-            this.textContent = '👁️';
-        } else {
-            passwordInput.type = 'password';
-            this.textContent = '👁️';
-        }
-    });
-
-    // Handle Google Login
-    function handleGoogleLogin(response) {
-        console.log("Google Token:", response.credential);
-
-        fetch("http://localhost:8080/api/google-login", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ token: response.credential }),
-        })
-            .then((res) => res.json())
-            .then((data) => {
-                alert("Google Login successful!");
-                console.log(data);
+                body: JSON.stringify({
+                    token: response.credential
+                })
             })
-            .catch((error) => {
-                console.error("Google Login error:", error);
-            });
-    }
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        // Check if user is admin and redirect accordingly
+                        if (data.isAdmin) {
+                            window.location.href = 'admin/homeAdmin.html';
+                        } else {
+                            window.location.href = 'home.html';
+                        }
+                    } else {
+                        throw new Error(data.message || 'Google login failed');
+                    }
+                })
+                .catch(error => {
+                    console.error('Google login error:', error);
+                    document.getElementById('loginError').textContent = error.message || 'Google login failed. Please try again.';
+                    document.getElementById('loginError').style.display = 'block';
 
-</script>
+                    // Reset button
+                    googleButton.innerHTML = originalText;
+                    googleButton.disabled = false;
+                });
+        }
 
+        // Prevent scrolling above the top boundary
+        document.addEventListener('DOMContentLoaded', function () {
+            let lastScrollTop = 0;
+            let lastTouch = 0;
+
+            document.addEventListener('scroll', function () {
+                const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+                if (scrollTop < lastScrollTop && scrollTop <= 0) {
+                    window.scrollTo(0, 0);
+                }
+
+                lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+            }, { passive: false });
+
+            document.addEventListener('touchmove', function (e) {
+                const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                if (scrollTop <= 0) {
+                    const touch = e.touches[0];
+                    if (touch.clientY > lastTouch) {
+                        e.preventDefault();
+                    }
+                }
+                lastTouch = e.touches[0].clientY;
+            }, { passive: false });
+
+            document.addEventListener('touchstart', function (e) {
+                lastTouch = e.touches[0].clientY;
+            }, { passive: true });
+        });
+    </script>
+</body>
 
 </html>
