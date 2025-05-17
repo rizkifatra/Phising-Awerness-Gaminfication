@@ -24,8 +24,8 @@
 
         /* Admin Header */
         .admin-header {
-            background-color: #343a40;
-            padding: 1rem;
+            background-color: #28a745;
+            padding: 1.5rem 1.75rem;
             color: white;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
             position: fixed;
@@ -33,13 +33,13 @@
             left: 0;
             right: 0;
             z-index: 1000;
-            height: auto;
+            height: 65px;
             display: flex;
             align-items: center;
         }
 
         .admin-header h4 {
-            font-size: 1.4rem;
+            font-size: 1.6rem;
             font-weight: 600;
             margin-bottom: 0;
         }
@@ -47,11 +47,11 @@
         /* Sidebar */
         .sidebar {
             position: fixed;
-            top: 60px;
+            top: 65px;
             left: 0;
             width: 250px;
-            height: calc(100vh - 60px);
-            background-color: #343a40;
+            height: calc(100vh - 65px);
+            background-color: #28a745;
             padding-top: 20px;
             transition: all 0.3s;
             z-index: 999;
@@ -68,7 +68,7 @@
 
         .sidebar-link:hover,
         .sidebar-link.active {
-            background-color: rgba(255, 255, 255, 0.1);
+            background-color: rgba(255, 255, 255, 0.2);
             color: white;
         }
 
@@ -87,7 +87,7 @@
         /* Dashboard Cards */
         .dashboard-card {
             background-color: white;
-            border-radius: 8px;
+            border-radius: 12px;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
             padding: 20px;
             margin-bottom: 20px;
@@ -110,24 +110,12 @@
             font-size: 1.8rem;
         }
 
-        .bg-primary-light {
-            background-color: rgba(13, 110, 253, 0.1);
-            color: #0d6efd;
-        }
-
-        .bg-success-light {
-            background-color: rgba(25, 135, 84, 0.1);
-            color: #198754;
-        }
-
-        .bg-warning-light {
-            background-color: rgba(255, 193, 7, 0.1);
-            color: #ffc107;
-        }
-
+        .bg-primary-light,
+        .bg-success-light,
+        .bg-warning-light,
         .bg-info-light {
-            background-color: rgba(13, 202, 240, 0.1);
-            color: #0dcaf0;
+            background-color: rgba(40, 167, 69, 0.1);
+            color: #28a745;
         }
 
         .card-title {
@@ -141,12 +129,13 @@
             font-size: 1.8rem;
             font-weight: 700;
             margin-bottom: 0;
+            color: #28a745;
         }
 
         /* Recent Activity Table */
         .table-responsive {
             background-color: white;
-            border-radius: 8px;
+            border-radius: 12px;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
             padding: 20px;
         }
@@ -155,9 +144,38 @@
             margin-bottom: 0;
         }
 
+        /* Buttons styling */
+        .btn-outline-light {
+            border-color: white;
+            color: white;
+        }
+
+        .btn-outline-light:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        .btn-outline-primary {
+            border-color: #28a745;
+            color: #28a745;
+        }
+
+        .btn-outline-primary:hover {
+            background-color: #28a745;
+            border-color: #28a745;
+            color: white;
+        }
+
         .btn-sm {
             padding: 0.25rem 0.5rem;
             font-size: 0.75rem;
+        }
+
+        /* Section Headers */
+        h2,
+        h4 {
+            color: #28a745;
+            font-weight: 600;
         }
 
         /* Toggle Button for Small Screens */
@@ -193,6 +211,31 @@
             .admin-header h4 {
                 font-size: 1.2rem;
             }
+
+            .card-value {
+                font-size: 1.5rem;
+            }
+        }
+
+        /* For smaller screens */
+        @media (max-width: 575px) {
+            .dashboard-card {
+                padding: 15px;
+            }
+
+            .card-icon {
+                width: 50px;
+                height: 50px;
+                font-size: 1.5rem;
+            }
+
+            .card-value {
+                font-size: 1.3rem;
+            }
+
+            .welcome-text {
+                font-size: 1.5rem;
+            }
         }
     </style>
 </head>
@@ -217,12 +260,16 @@
 
     <!-- Sidebar -->
     <div class="sidebar" id="sidebar">
-        <a href="home.html" class="sidebar-link active">
+        <a href="homeAdmin.html" class="sidebar-link active">
             <i class="bi bi-speedometer2"></i> Dashboard
         </a>
-        <a href="manage.html" class="sidebar-link">
-            <i class="bi bi-gear-fill"></i> Management
+        <a href="users.html" class="sidebar-link">
+            <i class="bi bi-people"></i> Users
         </a>
+        <a href="questions.html" class="sidebar-link">
+            <i class="bi bi-question-circle"></i> Questions
+        </a>
+       
         <a href="../home.html" class="sidebar-link">
             <i class="bi bi-arrow-left-circle"></i> Back to App
         </a>

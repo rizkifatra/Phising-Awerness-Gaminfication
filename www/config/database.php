@@ -2,9 +2,21 @@
 class Database {
     private $host = "localhost";
     private $db_name = "PAG";
-    private $username = "root";
-    private $password = "";
+    private $username = "admin";
+    private $password = "ZYGR9TYQAf3U";
     private $conn;
+
+    public function __construct() {
+        // If db_credentials.php exists, use those credentials instead
+        $credFile = $_SERVER['DOCUMENT_ROOT'] . '/db_credentials.php';
+        if (file_exists($credFile)) {
+            include $credFile;
+            $this->host = $DB_HOST ?? $this->host;
+            $this->db_name = $DB_NAME ?? $this->db_name;
+            $this->username = $DB_USER ?? $this->username;
+            $this->password = $DB_PASS ?? $this->password;
+        }
+    }
 
     public function getConnection() {
         $this->conn = null;

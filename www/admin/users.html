@@ -24,8 +24,8 @@
 
         /* Admin Header */
         .admin-header {
-            background-color: #343a40;
-            padding: 1rem;
+            background-color: #28a745;
+            padding: 1.5rem 1.75rem;
             color: white;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
             position: fixed;
@@ -33,13 +33,13 @@
             left: 0;
             right: 0;
             z-index: 1000;
-            height: auto;
+            height: 65px;
             display: flex;
             align-items: center;
         }
 
         .admin-header h4 {
-            font-size: 1.4rem;
+            font-size: 1.6rem;
             font-weight: 600;
             margin-bottom: 0;
         }
@@ -47,11 +47,11 @@
         /* Sidebar */
         .sidebar {
             position: fixed;
-            top: 60px;
+            top: 65px;
             left: 0;
             width: 250px;
-            height: calc(100vh - 60px);
-            background-color: #343a40;
+            height: calc(100vh - 65px);
+            background-color: #28a745;
             padding-top: 20px;
             transition: all 0.3s;
             z-index: 999;
@@ -68,7 +68,7 @@
 
         .sidebar-link:hover,
         .sidebar-link.active {
-            background-color: rgba(255, 255, 255, 0.1);
+            background-color: rgba(255, 255, 255, 0.2);
             color: white;
         }
 
@@ -87,7 +87,7 @@
         /* Panel Card */
         .panel-card {
             background-color: white;
-            border-radius: 8px;
+            border-radius: 12px;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
             padding: 20px;
             margin-bottom: 20px;
@@ -96,7 +96,7 @@
         /* Table styling */
         .table-responsive {
             background-color: white;
-            border-radius: 8px;
+            border-radius: 12px;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
             padding: 20px;
         }
@@ -105,9 +105,48 @@
             margin-bottom: 0;
         }
 
+        /* Buttons styling */
+        .btn-primary {
+            background-color: #28a745;
+            border-color: #28a745;
+        }
+
+        .btn-primary:hover {
+            background-color: #218838;
+            border-color: #1e7e34;
+        }
+
+        .btn-outline-light {
+            border-color: white;
+            color: white;
+        }
+
+        .btn-outline-light:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        .btn-outline-primary {
+            border-color: #28a745;
+            color: #28a745;
+        }
+
+        .btn-outline-primary:hover {
+            background-color: #28a745;
+            border-color: #28a745;
+            color: white;
+        }
+
         .btn-sm {
             padding: 0.25rem 0.5rem;
             font-size: 0.75rem;
+        }
+
+        /* Section Headers */
+        h2,
+        h4 {
+            color: #28a745;
+            font-weight: 600;
         }
 
         /* Toggle Button for Small Screens */
@@ -129,8 +168,12 @@
 
         /* Modal customization */
         .modal-header {
-            background-color: #343a40;
+            background-color: #28a745;
             color: white;
+        }
+
+        .btn-close-white {
+            filter: brightness(0) invert(1);
         }
 
         .modal-footer {
@@ -139,16 +182,26 @@
         }
 
         /* Status badges */
-        .badge-verified {
+        .badge.bg-success {
+            background-color: #28a745 !important;
+        }
+
+        .badge.bg-primary {
+            background-color: #28a745 !important;
+        }
+
+        /* Pagination */
+        .pagination .page-item.active .page-link {
             background-color: #28a745;
+            border-color: #28a745;
         }
 
-        .badge-unverified {
-            background-color: #dc3545;
+        .pagination .page-link {
+            color: #28a745;
         }
 
-        .badge-admin {
-            background-color: #007bff;
+        .pagination .page-link:hover {
+            color: #218838;
         }
 
         /* For Mobile Devices */
@@ -177,6 +230,39 @@
 
             .search-filter {
                 flex-direction: column;
+                gap: 5px;
+            }
+
+            /* Smaller table text on mobile */
+            .table {
+                font-size: 0.85rem;
+            }
+
+            /* Adjust table columns for mobile */
+            .table thead th:nth-child(5),
+            .table thead th:nth-child(6),
+            .table tbody td:nth-child(5),
+            .table tbody td:nth-child(6) {
+                display: none;
+            }
+        }
+
+        /* For extra small devices */
+        @media (max-width: 575px) {
+
+            .table thead th:nth-child(4),
+            .table thead th:nth-child(7),
+            .table tbody td:nth-child(4),
+            .table tbody td:nth-child(7) {
+                display: none;
+            }
+
+            .panel-card {
+                padding: 15px;
+            }
+
+            h2 {
+                font-size: 1.5rem;
             }
         }
     </style>
@@ -202,7 +288,7 @@
 
     <!-- Sidebar -->
     <div class="sidebar" id="sidebar">
-        <a href="home.html" class="sidebar-link">
+        <a href="homeAdmin.html" class="sidebar-link">
             <i class="bi bi-speedometer2"></i> Dashboard
         </a>
         <a href="users.html" class="sidebar-link active">
@@ -211,15 +297,7 @@
         <a href="questions.html" class="sidebar-link">
             <i class="bi bi-question-circle"></i> Questions
         </a>
-        <a href="games.html" class="sidebar-link">
-            <i class="bi bi-controller"></i> Games
-        </a>
-        <a href="scores.html" class="sidebar-link">
-            <i class="bi bi-trophy"></i> Scores
-        </a>
-        <a href="settings.html" class="sidebar-link">
-            <i class="bi bi-gear"></i> Settings
-        </a>
+
         <a href="../home.html" class="sidebar-link">
             <i class="bi bi-arrow-left-circle"></i> Back to App
         </a>

@@ -1,0 +1,1298 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Question Management - Admin Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        /* Prevent overscroll bounce effect */
+        html,
+        body {
+            overscroll-behavior-y: none;
+            width: 100%;
+            height: 100%;
+            overflow-x: hidden;
+            font-size: 16px;
+        }
+
+        body {
+            background-color: #f8f9fa;
+        }
+
+        /* Admin Header */
+        .admin-header {
+            background-color: #28a745;
+            padding: 1.5rem 1.75rem;
+            color: white;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            height: 65px;
+            display: flex;
+            align-items: center;
+        }
+
+        .admin-header h4 {
+            font-size: 1.6rem;
+            font-weight: 600;
+            margin-bottom: 0;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            top: 65px;
+            left: 0;
+            width: 250px;
+            height: calc(100vh - 65px);
+            background-color: #28a745;
+            padding-top: 20px;
+            transition: all 0.3s;
+            z-index: 999;
+        }
+
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            padding: 10px 20px;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .sidebar-link:hover,
+        .sidebar-link.active {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        .sidebar-link i {
+            margin-right: 10px;
+            font-size: 1.1rem;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 250px;
+            padding: 80px 20px 20px;
+            min-height: 100vh;
+        }
+
+        /* Panel Card */
+        .panel-card {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        /* Table styling */
+        .table-responsive {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+
+        .table {
+            margin-bottom: 0;
+        }
+
+        /* Buttons styling */
+        .btn-primary {
+            background-color: #28a745;
+            border-color: #28a745;
+        }
+
+        .btn-primary:hover {
+            background-color: #218838;
+            border-color: #1e7e34;
+        }
+
+        .btn-outline-light {
+            border-color: white;
+            color: white;
+        }
+
+        .btn-outline-light:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        .btn-outline-primary {
+            border-color: #28a745;
+            color: #28a745;
+        }
+
+        .btn-outline-primary:hover {
+            background-color: #28a745;
+            border-color: #28a745;
+            color: white;
+        }
+
+        .btn-sm {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+        }
+
+        /* Section Headers */
+        h2,
+        h4 {
+            color: #28a745;
+            font-weight: 600;
+        }
+
+        /* Toggle Button for Small Screens */
+        .sidebar-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* Modal customization */
+        .modal-header {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .btn-close-white {
+            filter: brightness(0) invert(1);
+        }
+
+        .modal-footer {
+            border-top: 1px solid #dee2e6;
+            padding: 1rem;
+        }
+
+        /* Mobile-friendly tables for levels */
+        .level-table {
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .level-table .table {
+            margin-bottom: 0;
+        }
+
+        .level-table .table-header {
+            background-color: #28a745;
+            color: white;
+            padding: 0.75rem 1rem;
+        }
+
+        .level-table-title {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .type-icon {
+            width: 25px;
+            text-align: center;
+            margin-right: 10px;
+        }
+
+        /* For smaller mobile devices */
+        @media (max-width: 576px) {
+            .level-actions {
+                display: flex;
+                flex-direction: column;
+            }
+
+            .level-actions .btn {
+                margin-bottom: 0.5rem;
+            }
+
+            .level-badge {
+                display: block;
+                margin-top: 5px;
+            }
+
+            .level-table .btn-sm {
+                padding: 0.4rem 0.6rem;
+                font-size: 0.8rem;
+                margin-left: 0;
+                margin-top: 5px;
+            }
+        }
+
+        /* For Mobile Devices */
+        @media (max-width: 767.98px) {
+            .sidebar {
+                transform: translateX(-100%);
+                width: 200px;
+            }
+
+            .sidebar.show {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 80px 10px 20px;
+            }
+
+            .sidebar-toggle {
+                display: block;
+            }
+
+            .admin-header h4 {
+                font-size: 1.2rem;
+            }
+
+            /* Smaller table text on mobile */
+            .table {
+                font-size: 0.85rem;
+            }
+        }
+
+        /* For extra small devices */
+        @media (max-width: 575px) {
+            .panel-card {
+                padding: 15px;
+            }
+
+            h2 {
+                font-size: 1.5rem;
+            }
+        }
+
+        /* Nav tabs styling */
+        .nav-tabs {
+            border-bottom: 1px solid #dee2e6;
+            margin-bottom: 20px;
+        }
+
+        .nav-tabs .nav-link {
+            margin-bottom: -1px;
+            color: #495057;
+            border: 1px solid transparent;
+            border-top-left-radius: 0.25rem;
+            border-top-right-radius: 0.25rem;
+        }
+
+        .nav-tabs .nav-link:hover {
+            border-color: #e9ecef #e9ecef #dee2e6;
+        }
+
+        .nav-tabs .nav-link.active {
+            color: #28a745;
+            background-color: #fff;
+            border-color: #dee2e6 #dee2e6 #fff;
+            font-weight: 600;
+        }
+
+        .levels-container {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Admin Header -->
+    <div class="admin-header">
+        <div class="container-fluid d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center">
+                <button class="sidebar-toggle me-3" id="sidebarToggle">
+                    <i class="bi bi-list"></i>
+                </button>
+                <h4 class="mb-0">Question Management</h4>
+            </div>
+            <div>
+                <button class="btn btn-outline-light btn-sm" id="logoutBtn">
+                    <i class="bi bi-box-arrow-right me-1"></i> Logout
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <a href="homeAdmin.html" class="sidebar-link">
+            <i class="bi bi-speedometer2"></i> Dashboard
+        </a>
+        <a href="users.html" class="sidebar-link">
+            <i class="bi bi-people"></i> Users
+        </a>
+        <a href="questions.html" class="sidebar-link active">
+            <i class="bi bi-question-circle"></i> Questions
+        </a>
+        <a href="../home.html" class="sidebar-link">
+            <i class="bi bi-arrow-left-circle"></i> Back to App
+        </a>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="container-fluid">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2>Manage Questions</h2>
+            </div>
+
+            <!-- Game Type Tabs -->
+            <ul class="nav nav-tabs" id="questionTypeTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="mcq-tab" data-bs-toggle="tab" data-bs-target="#mcq-content"
+                        type="button" role="tab" aria-controls="mcq-content" aria-selected="true">
+                        <i class="bi bi-list-check me-1"></i> Multiple Choice
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="fillblank-tab" data-bs-toggle="tab" data-bs-target="#fillblank-content"
+                        type="button" role="tab" aria-controls="fillblank-content" aria-selected="false">
+                        <i class="bi bi-input-cursor-text me-1"></i> Fill in the Blank
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="puzzle-tab" data-bs-toggle="tab" data-bs-target="#puzzle-content"
+                        type="button" role="tab" aria-controls="puzzle-content" aria-selected="false">
+                        <i class="bi bi-grid-3x3 me-1"></i> Word Puzzle
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="levels-tab" data-bs-toggle="tab" data-bs-target="#levels-content"
+                        type="button" role="tab" aria-controls="levels-content" aria-selected="false">
+                        <i class="bi bi-layers me-1"></i> Manage Levels
+                    </button>
+                </li>
+            </ul>
+
+            <!-- Tab Content -->
+            <div class="tab-content" id="questionTabContent">
+                <!-- MCQ Questions Tab -->
+                <div class="tab-pane fade show active" id="mcq-content" role="tabpanel" aria-labelledby="mcq-tab">
+                    <div class="d-flex justify-content-end mb-3">
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addMcqModal">
+                            <i class="bi bi-plus-circle me-1"></i> Add MCQ Question
+                        </button>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Level</th>
+                                    <th>Question</th>
+                                    <th>Options</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="mcqQuestionsTableBody">
+                                <tr>
+                                    <td colspan="5" class="text-center">Loading MCQ questions...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Fill in the Blank Tab -->
+                <div class="tab-pane fade" id="fillblank-content" role="tabpanel" aria-labelledby="fillblank-tab">
+                    <div class="d-flex justify-content-end mb-3">
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addFillBlankModal">
+                            <i class="bi bi-plus-circle me-1"></i> Add Fill in the Blank
+                        </button>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Level</th>
+                                    <th>Question</th>
+                                    <th>Answer</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="fillBlankQuestionsTableBody">
+                                <tr>
+                                    <td colspan="5" class="text-center">Loading Fill in the Blank questions...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Word Puzzle Tab -->
+                <div class="tab-pane fade" id="puzzle-content" role="tabpanel" aria-labelledby="puzzle-tab">
+                    <div class="d-flex justify-content-end mb-3">
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addPuzzleModal">
+                            <i class="bi bi-plus-circle me-1"></i> Add Word Puzzle
+                        </button>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Level</th>
+                                    <th>Category</th>
+                                    <th>Words</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="puzzleQuestionsTableBody">
+                                <tr>
+                                    <td colspan="5" class="text-center">Loading Word Puzzles...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Manage Levels Tab -->
+                <div class="tab-pane fade" id="levels-content" role="tabpanel" aria-labelledby="levels-tab">
+                    <div class="mb-4 panel-card">
+                        <h4 class="mb-3"><i class="bi bi-layers me-2"></i>Manage Question Levels</h4>
+                        <p class="text-muted">
+                            This section allows you to manage question levels. You can delete all questions for a
+                            specific level,
+                            or delete questions of a specific type (MCQ, Fill in the Blank, Word Puzzle) for a level.
+                        </p>
+                        <div class="alert alert-warning">
+                            <i class="bi bi-exclamation-triangle me-2"></i>
+                            <strong>Warning:</strong> Deleting is permanent and cannot be undone.
+                        </div>
+                    </div>
+
+                    <div id="levelsContainer" class="levels-container">
+                        <div class="text-center p-4">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <p class="mt-2">Loading levels...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add MCQ Question Modal -->
+    <div class="modal fade" id="addMcqModal" tabindex="-1" aria-labelledby="addMcqModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addMcqModalLabel">Add MCQ Question</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addMcqForm">
+                        <div class="mb-3">
+                            <label for="mcqLevel" class="form-label">Level</label>
+                            <select id="mcqLevel" class="form-select" required>
+                                <option value="">Select Level</option>
+                                <option value="1">Level 1</option>
+                                <option value="2">Level 2</option>
+                                <option value="3">Level 3</option>
+                                <option value="4">Level 4</option>
+                                <option value="5">Level 5</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="mcqQuestion" class="form-label">Question Text</label>
+                            <textarea id="mcqQuestion" class="form-control" rows="2" required></textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Options</label>
+                            <div class="input-group mb-2">
+                                <span class="input-group-text">A</span>
+                                <input type="text" class="form-control" id="mcqOption1" required>
+                            </div>
+                            <div class="input-group mb-2">
+                                <span class="input-group-text">B</span>
+                                <input type="text" class="form-control" id="mcqOption2" required>
+                            </div>
+                            <div class="input-group mb-2">
+                                <span class="input-group-text">C</span>
+                                <input type="text" class="form-control" id="mcqOption3" required>
+                            </div>
+                            <div class="input-group mb-2">
+                                <span class="input-group-text">D</span>
+                                <input type="text" class="form-control" id="mcqOption4" required>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="mcqCorrectAnswer" class="form-label">Correct Answer</label>
+                            <select id="mcqCorrectAnswer" class="form-select" required>
+                                <option value="">Select Correct Answer</option>
+                                <option value="0">A</option>
+                                <option value="1">B</option>
+                                <option value="2">C</option>
+                                <option value="3">D</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="saveMcqBtn">Save Question</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Fill in the Blank Modal -->
+    <div class="modal fade" id="addFillBlankModal" tabindex="-1" aria-labelledby="addFillBlankModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addFillBlankModalLabel">Add Fill in the Blank Question</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addFillBlankForm">
+                        <div class="mb-3">
+                            <label for="fillBlankLevel" class="form-label">Level</label>
+                            <select id="fillBlankLevel" class="form-select" required>
+                                <option value="">Select Level</option>
+                                <option value="1">Level 1</option>
+                                <option value="2">Level 2</option>
+                                <option value="3">Level 3</option>
+                                <option value="4">Level 4</option>
+                                <option value="5">Level 5</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="fillBlankQuestion" class="form-label">Question Text</label>
+                            <textarea id="fillBlankQuestion" class="form-control" rows="3" required
+                                placeholder="Use [blank] to mark where the blank should be"></textarea>
+                            <small class="text-muted">Example: HTML stands for [blank] Text Markup Language.</small>
+                        </div>
+                        <div class="mb-3">
+                            <label for="fillBlankAnswer" class="form-label">Answer</label>
+                            <input type="text" class="form-control" id="fillBlankAnswer" required>
+                            <small class="text-muted">The word that goes in the [blank]</small>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="saveFillBlankBtn">Save Question</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Word Puzzle Modal -->
+    <div class="modal fade" id="addPuzzleModal" tabindex="-1" aria-labelledby="addPuzzleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addPuzzleModalLabel">Add Word Puzzle</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addPuzzleForm">
+                        <div class="mb-3">
+                            <label for="puzzleLevel" class="form-label">Level</label>
+                            <select id="puzzleLevel" class="form-select" required>
+                                <option value="">Select Level</option>
+                                <option value="1">Level 1</option>
+                                <option value="2">Level 2</option>
+                                <option value="3">Level 3</option>
+                                <option value="4">Level 4</option>
+                                <option value="5">Level 5</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="puzzleCategory" class="form-label">Category</label>
+                            <input type="text" class="form-control" id="puzzleCategory" required
+                                placeholder="e.g., Phishing Terms">
+                        </div>
+                        <div class="mb-3">
+                            <label for="puzzleWords" class="form-label">Words</label>
+                            <textarea id="puzzleWords" class="form-control" rows="3" required
+                                placeholder="Enter words separated by commas"></textarea>
+                            <small class="text-muted">Example: PHISHING, SCAM, SPAM, FRAUD</small>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="savePuzzleBtn">Save Puzzle</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Toggle sidebar on mobile
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            const sidebar = document.getElementById('sidebar');
+            sidebarToggle.addEventListener('click', function () {
+                sidebar.classList.toggle('show');
+            });
+            // Close sidebar when clicking outside on mobile
+            document.addEventListener('click', function (event) {
+                const isClickInsideSidebar = sidebar.contains(event.target);
+                const isClickOnToggle = sidebarToggle.contains(event.target);
+                if (!isClickInsideSidebar && !isClickOnToggle && sidebar.classList.contains('show')) {
+                    sidebar.classList.remove('show');
+                }
+            });
+
+            // Logout functionality
+            document.getElementById('logoutBtn').addEventListener('click', function () {
+                // Add logout functionality here
+                window.location.href = '../index.html';
+            });
+
+            // Load questions for the active tab
+            loadMcqQuestions();
+            loadFillBlankQuestions();
+            loadPuzzleQuestions();
+            loadLevels();
+
+            // Add event listeners for save buttons
+            document.getElementById('saveMcqBtn').addEventListener('click', addMcqQuestion);
+            document.getElementById('saveFillBlankBtn').addEventListener('click', addFillBlankQuestion);
+            document.getElementById('savePuzzleBtn').addEventListener('click', addPuzzleQuestion);
+
+            // Setup tab change event listeners
+            document.querySelectorAll('button[data-bs-toggle="tab"]').forEach(tab => {
+                tab.addEventListener('shown.bs.tab', function (event) {
+                    const targetId = event.target.getAttribute('id');
+                    if (targetId === 'mcq-tab') {
+                        loadMcqQuestions();
+                    } else if (targetId === 'fillblank-tab') {
+                        loadFillBlankQuestions();
+                    } else if (targetId === 'puzzle-tab') {
+                        loadPuzzleQuestions();
+                    } else if (targetId === 'levels-tab') {
+                        loadLevels();
+                    }
+                });
+            });
+        });
+
+        // MCQ Questions Functions
+        async function loadMcqQuestions() {
+            const tableBody = document.getElementById('mcqQuestionsTableBody');
+            tableBody.innerHTML = '<tr><td colspan="5" class="text-center">Loading...</td></tr>';
+            try {
+                const response = await fetch('../api/get_questions.php', { method: 'GET' });
+                const data = await response.json();
+                if (Array.isArray(data) && data.length > 0) {
+                    renderMcqQuestions(data);
+                } else {
+                    tableBody.innerHTML = '<tr><td colspan="5" class="text-center">No MCQ questions found</td></tr>';
+                }
+            } catch (error) {
+                console.error('Error loading MCQ questions:', error);
+                tableBody.innerHTML = '<tr><td colspan="5" class="text-center text-danger">Error loading questions</td></tr>';
+            }
+        }
+        function renderMcqQuestions(questions) {
+            const tableBody = document.getElementById('mcqQuestionsTableBody');
+            tableBody.innerHTML = '';
+
+            questions.forEach(question => {
+                const row = document.createElement('tr');
+                const options = Array.isArray(question.options) ? question.options : [];
+
+                row.innerHTML = `
+                    <td>${question.id}</td>
+                    <td>${question.level || '-'}</td>
+                    <td>${question.question_text}</td>
+                    <td>${options.length} options</td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-primary me-1" onclick="editMcqQuestion(${question.id})">
+                            <i class="bi bi-pencil"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger" onclick="deleteMcqQuestion(${question.id})">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        async function addMcqQuestion() {
+            // Get form valuestion() {
+            const level = document.getElementById('mcqLevel').value;
+            const question = document.getElementById('mcqQuestion').value;evel').value;
+            const option1 = document.getElementById('mcqOption1').value;ment.getElementById('mcqQuestion').value;
+            const option2 = document.getElementById('mcqOption2').value; = document.getElementById('mcqOption1').value;
+            const option3 = document.getElementById('mcqOption3').value;option2 = document.getElementById('mcqOption2').value;
+            const option4 = document.getElementById('mcqOption4').value;mentById('mcqOption3').value;
+            const correctAnswer = document.getElementById('mcqCorrectAnswer').value;st option4 = document.getElementById('mcqOption4').value;
+   const correctAnswer = document.getElementById('mcqCorrectAnswer').value;
+            // Validate form
+            if (!level || !question || !option1 || !option2 || !option3 || !option4 || correctAnswer === '') {
+                alert('Please fill in all fields');stion || !option1 || !option2 || !option3 || !option4 || correctAnswer === '') {
+                return;
+            }
+
+            const options = [option1, option2, option3, option4];
+
+            try {
+                const response = await fetch('../api/admin/add_mcq_question.php', {
+                    method: 'POST',                const response = await fetch('../api/admin/add_mcq_question.php', {
+                    headers: { 'Content-Type': 'application/json' },'POST',
+                    body: JSON.stringify({
+                        level: level,
+                        question_text: question, level: level,
+                        options: options,           question_text: question,
+                        correct_answer: correctAnswer                        options: options,
+                    })
+                });                    })
+);
+                const data = await response.json();
+response.json();
+                if (data.success) {
+                    alert('MCQ question added successfully');
+on added successfully');
+                    // Clear form
+                    document.getElementById('mcqLevel').value = '';
+                    document.getElementById('mcqQuestion').value = '';').value = '';
+                    document.getElementById('mcqOption1').value = '';cument.getElementById('mcqQuestion').value = '';
+                    document.getElementById('mcqOption2').value = ''; document.getElementById('mcqOption1').value = '';
+                    document.getElementById('mcqOption3').value = '';                    document.getElementById('mcqOption2').value = '';
+                    document.getElementById('mcqOption4').value = '';ion3').value = '';
+                    document.getElementById('mcqCorrectAnswer').value = '';                    document.getElementById('mcqOption4').value = '';
+mentById('mcqCorrectAnswer').value = '';
+                    // Close modal
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('addMcqModal'));                    // Close modal
+                    modal.hide(); bootstrap.Modal.getInstance(document.getElementById('addMcqModal'));
+
+                    // Reload questions
+                    loadMcqQuestions();
+                } else {
+                    alert('Failed to add MCQ question: ' + (data.message || 'Unknown error'));
+                }age || 'Unknown error'));
+            } catch (error) {
+                console.error('Error adding MCQ question:', error);            } catch (error) {
+                alert('Error adding MCQ question');or adding MCQ question:', error);
+            }
+        }
+        }
+        async function deleteMcqQuestion(id) {
+            if (!confirm('Are you sure you want to delete this MCQ question?')) {n(id) {
+                return;('Are you sure you want to delete this MCQ question?')) {
+            }
+
+            try {
+                const response = await fetch('../api/admin/delete_mcq_question.php', {
+                    method: 'POST',i/admin/delete_mcq_question.php', {
+                    headers: { 'Content-Type': 'application/json' },       method: 'POST',
+                    body: JSON.stringify({ id: id })           headers: { 'Content-Type': 'application/json' },
+                });                    body: JSON.stringify({ id: id })
+
+                const data = await response.json();
+ata = await response.json();
+                if (data.success) {
+                    alert('MCQ question deleted successfully');                if (data.success) {
+                    loadMcqQuestions();   alert('MCQ question deleted successfully');
+                } else {
+                    alert('Failed to delete MCQ question: ' + (data.message || 'Unknown error'));
+                }message || 'Unknown error'));
+            } catch (error) {
+                console.error('Error deleting MCQ question:', error); (error) {
+                alert('Error deleting MCQ question');                console.error('Error deleting MCQ question:', error);
+            }
+        }            }
+
+        // Fill in the Blank Functions
+        async function loadFillBlankQuestions() {
+            const tableBody = document.getElementById('fillBlankQuestionsTableBody');oadFillBlankQuestions() {
+            tableBody.innerHTML = '<tr><td colspan="5" class="text-center">Loading...</td></tr>';
+Body.innerHTML = '<tr><td colspan="5" class="text-center">Loading...</td></tr>';
+            try {
+                const response = await fetch('../api/get_fill_questions.php', { method: 'GET' });
+                const data = await response.json();get_fill_questions.php', { method: 'GET' });
+   const data = await response.json();
+                if (Array.isArray(data) && data.length > 0) {
+                    renderFillBlankQuestions(data);                if (Array.isArray(data) && data.length > 0) {
+                } else {stions(data);
+                    tableBody.innerHTML = '<tr><td colspan="5" class="text-center">No Fill in the Blank questions found</td></tr>';
+                } Fill in the Blank questions found</td></tr>';
+            } catch (error) {
+                console.error('Error loading Fill in the Blank questions:', error);            } catch (error) {
+                tableBody.innerHTML = '<tr><td colspan="5" class="text-center text-danger">Error loading questions</td></tr>';onsole.error('Error loading Fill in the Blank questions:', error);
+            }loading questions</td></tr>';
+        }
+        }
+        function renderFillBlankQuestions(questions) {
+            const tableBody = document.getElementById('fillBlankQuestionsTableBody');) {
+            tableBody.innerHTML = '';ody = document.getElementById('fillBlankQuestionsTableBody');
+
+            questions.forEach(question => {
+                const row = document.createElement('tr');(question => {
+                const answers = Array.isArray(question.answers) ? question.answers.join(', ') : '';
+
+                row.innerHTML = `
+                    <td>${question.id}</td>       row.innerHTML = `
+                    <td>${question.level || '-'}</td>                    <td>${question.id}</td>
+                    <td>${question.text || question.question_text}</td>
+                    <td>${answers}</td>
+                    <td>d>
+                        <button class="btn btn-sm btn-outline-primary me-1" onclick="editFillBlankQuestion(${question.id})">                    <td>
+                            <i class="bi bi-pencil"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger" onclick="deleteFillBlankQuestion(${question.id})">
+                            <i class="bi bi-trash"></i>                        <button class="btn btn-sm btn-outline-danger" onclick="deleteFillBlankQuestion(${question.id})">
+                        </button>ass="bi bi-trash"></i>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });ow);
+        }
+
+        async function addFillBlankQuestion() {
+            // Get form valuesnkQuestion() {
+            const level = document.getElementById('fillBlankLevel').value;
+            const question = document.getElementById('fillBlankQuestion').value;BlankLevel').value;
+            const answer = document.getElementById('fillBlankAnswer').value;ment.getElementById('fillBlankQuestion').value;
+= document.getElementById('fillBlankAnswer').value;
+            // Validate form
+            if (!level || !question || !answer) {
+                alert('Please fill in all fields');(!level || !question || !answer) {
+                return;       alert('Please fill in all fields');
+            }                return;
+
+            // Check if question contains [blank]
+            if (!question.includes('[blank]')) {
+                alert('Question must contain [blank] placeholder');
+                return;
+            }                return;
+
+            try {
+                const response = await fetch('../api/admin/add_fill_blank_question.php', {
+                    method: 'POST',esponse = await fetch('../api/admin/add_fill_blank_question.php', {
+                    headers: { 'Content-Type': 'application/json' },       method: 'POST',
+                    body: JSON.stringify({                    headers: { 'Content-Type': 'application/json' },
+                        level: level,
+                        question_text: question,
+                        answers: [answer]
+                    }) answers: [answer]
+                });       })
+                });
+                const data = await response.json();
+
+                if (data.success) {
+                    alert('Fill in the Blank question added successfully');
+nk question added successfully');
+                    // Clear form
+                    document.getElementById('fillBlankLevel').value = '';
+                    document.getElementById('fillBlankQuestion').value = '';Id('fillBlankLevel').value = '';
+                    document.getElementById('fillBlankAnswer').value = '';cument.getElementById('fillBlankQuestion').value = '';
+ document.getElementById('fillBlankAnswer').value = '';
+                    // Close modal
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('addFillBlankModal'));
+                    modal.hide();                    const modal = bootstrap.Modal.getInstance(document.getElementById('addFillBlankModal'));
+
+                    // Reload questions
+                    loadFillBlankQuestions();                    // Reload questions
+                } else {Questions();
+                    alert('Failed to add Fill in the Blank question: ' + (data.message || 'Unknown error'));
+                }ta.message || 'Unknown error'));
+            } catch (error) {
+                console.error('Error adding Fill in the Blank question:', error);            } catch (error) {
+                alert('Error adding Fill in the Blank question');or adding Fill in the Blank question:', error);
+            }
+        }
+        }
+        async function deleteFillBlankQuestion(id) {
+            if (!confirm('Are you sure you want to delete this Fill in the Blank question?')) {n(id) {
+                return;('Are you sure you want to delete this Fill in the Blank question?')) {
+            }
+
+            try {
+                const response = await fetch('../api/admin/delete_fill_blank_question.php', {
+                    method: 'POST',_fill_blank_question.php', {
+                    headers: { 'Content-Type': 'application/json' },       method: 'POST',
+                    body: JSON.stringify({ id: id })           headers: { 'Content-Type': 'application/json' },
+                });                    body: JSON.stringify({ id: id })
+
+                const data = await response.json();
+ata = await response.json();
+                if (data.success) {
+                    alert('Fill in the Blank question deleted successfully');                if (data.success) {
+                    loadFillBlankQuestions();   alert('Fill in the Blank question deleted successfully');
+                } else {
+                    alert('Failed to delete Fill in the Blank question: ' + (data.message || 'Unknown error'));
+                }on: ' + (data.message || 'Unknown error'));
+            } catch (error) {
+                console.error('Error deleting Fill in the Blank question:', error); (error) {
+                alert('Error deleting Fill in the Blank question');                console.error('Error deleting Fill in the Blank question:', error);
+            }lank question');
+        }            }
+
+        // Word Puzzle Functions
+        async function loadPuzzleQuestions() {
+            const tableBody = document.getElementById('puzzleQuestionsTableBody');oadPuzzleQuestions() {
+            tableBody.innerHTML = '<tr><td colspan="5" class="text-center">Loading...</td></tr>';
+Body.innerHTML = '<tr><td colspan="5" class="text-center">Loading...</td></tr>';
+            try {
+                const response = await fetch('../api/admin/get_word_puzzles.php', { method: 'GET' });
+                const data = await response.json();_puzzles.php', { method: 'GET' });
+   const data = await response.json();
+                if (data.success && Array.isArray(data.puzzles) && data.puzzles.length > 0) {
+                    renderPuzzleQuestions(data.puzzles);                if (data.success && Array.isArray(data.puzzles) && data.puzzles.length > 0) {
+                } else {Questions(data.puzzles);
+                    tableBody.innerHTML = '<tr><td colspan="5" class="text-center">No Word Puzzles found</td></tr>';
+                }>No Word Puzzles found</td></tr>';
+            } catch (error) {
+                console.error('Error loading Word Puzzles:', error);            } catch (error) {
+                tableBody.innerHTML = '<tr><td colspan="5" class="text-center text-danger">Error loading puzzles</td></tr>';onsole.error('Error loading Word Puzzles:', error);
+            }ing puzzles</td></tr>';
+        }
+        }
+        function renderPuzzleQuestions(puzzles) {
+            const tableBody = document.getElementById('puzzleQuestionsTableBody');
+            tableBody.innerHTML = '';ody = document.getElementById('puzzleQuestionsTableBody');
+
+            puzzles.forEach(puzzle => {
+                const row = document.createElement('tr');uzzle => {
+
+                // Parse words if needed
+                let words = puzzle.words;   // Parse words if needed
+                if (typeof words === 'string') {       let words = puzzle.words;
+                    try {                if (typeof words === 'string') {
+                        words = JSON.parse(words);
+                    } catch (e) {
+                        words = ['Error parsing words'];
+                    }                        words = ['Error parsing words'];
+                }
+
+                const wordsList = Array.isArray(words) ? words.join(', ') : words;
+isArray(words) ? words.join(', ') : words;
+                row.innerHTML = `
+                    <td>${puzzle.id}</td>
+                    <td>${puzzle.level}</td>{puzzle.id}</td>
+                    <td>${puzzle.category}</td>
+                    <td>${wordsList}</td>category}</td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-primary me-1" onclick="editPuzzleQuestion(${puzzle.id})">td>
+                            <i class="bi bi-pencil"></i>       <button class="btn btn-sm btn-outline-primary me-1" onclick="editPuzzleQuestion(${puzzle.id})">
+                        </button>                            <i class="bi bi-pencil"></i>
+                        <button class="btn btn-sm btn-outline-danger" onclick="deletePuzzleQuestion(${puzzle.id})">
+                            <i class="bi bi-trash"></i>                        <button class="btn btn-sm btn-outline-danger" onclick="deletePuzzleQuestion(${puzzle.id})">
+                        </button>ass="bi bi-trash"></i>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            }););
+        }
+
+        async function addPuzzleQuestion() {
+            // Get form valuesuestion() {
+            const level = document.getElementById('puzzleLevel').value;
+            const category = document.getElementById('puzzleCategory').value;leLevel').value;
+            const wordsText = document.getElementById('puzzleWords').value;ment.getElementById('puzzleCategory').value;
+xt = document.getElementById('puzzleWords').value;
+            // Validate form
+            if (!level || !category || !wordsText) {
+                alert('Please fill in all fields');(!level || !category || !wordsText) {
+                return;       alert('Please fill in all fields');
+            }                return;
+
+            // Parse words
+            const words = wordsText.split(',').map(word => word.trim().toUpperCase()).filter(word => word);
+rCase()).filter(word => word);
+            if (words.length < 3) {
+                alert('Please enter at least 3 words');            if (words.length < 3) {
+                return;e enter at least 3 words');
+            }
+
+            try {
+                const response = await fetch('../api/admin/add_word_puzzle.php', {ry {
+                    method: 'POST',                const response = await fetch('../api/admin/add_word_puzzle.php', {
+                    headers: { 'Content-Type': 'application/json' },: 'POST',
+                    body: JSON.stringify({
+                        level: level,                    body: JSON.stringify({
+                        category: category,l,
+                        words: words
+                    }) words: words
+                });       })
+                });
+                const data = await response.json();
+
+                if (data.success) {
+                    alert('Word Puzzle added successfully');
+ed successfully');
+                    // Clear form
+                    document.getElementById('puzzleLevel').value = '';
+                    document.getElementById('puzzleCategory').value = '';entById('puzzleLevel').value = '';
+                    document.getElementById('puzzleWords').value = '';cument.getElementById('puzzleCategory').value = '';
+ document.getElementById('puzzleWords').value = '';
+                    // Close modal
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('addPuzzleModal'));
+                    modal.hide();                    const modal = bootstrap.Modal.getInstance(document.getElementById('addPuzzleModal'));
+
+                    // Reload puzzles
+                    loadPuzzleQuestions();                    // Reload puzzles
+                } else {stions();
+                    alert('Failed to add Word Puzzle: ' + (data.message || 'Unknown error'));
+                }| 'Unknown error'));
+            } catch (error) {
+                console.error('Error adding Word Puzzle:', error);            } catch (error) {
+                alert('Error adding Word Puzzle');or adding Word Puzzle:', error);
+            }
+        }
+        }
+        async function deletePuzzleQuestion(id) {
+            if (!confirm('Are you sure you want to delete this Word Puzzle?')) {n(id) {
+                return;('Are you sure you want to delete this Word Puzzle?')) {
+            }
+
+            try {
+                const response = await fetch('../api/admin/delete_word_puzzle.php', {
+                    method: 'POST',pi/admin/delete_word_puzzle.php', {
+                    headers: { 'Content-Type': 'application/json' },       method: 'POST',
+                    body: JSON.stringify({ id: id })           headers: { 'Content-Type': 'application/json' },
+                });                    body: JSON.stringify({ id: id })
+
+                const data = await response.json();
+ata = await response.json();
+                if (data.success) {
+                    alert('Word Puzzle deleted successfully');                if (data.success) {
+                    loadPuzzleQuestions();   alert('Word Puzzle deleted successfully');
+                } else {
+                    alert('Failed to delete Word Puzzle: ' + (data.message || 'Unknown error'));
+                }essage || 'Unknown error'));
+            } catch (error) {
+                console.error('Error deleting Word Puzzle:', error); (error) {
+                alert('Error deleting Word Puzzle');                console.error('Error deleting Word Puzzle:', error);
+            };
+        }            }
+
+        // Level Management Functions
+        async function loadLevels() {
+            const levelsContainer = document.getElementById('levelsContainer');oadLevels() {
+            levelsContainer.innerHTML = `
+                <div class="text-center p-4">iner.innerHTML = `
+                    <div class="spinner-border text-primary" role="status">ext-center p-4">
+                        <span class="visually-hidden">Loading...</span>tatus">
+                    </div>">Loading...</span>
+                    <p class="mt-2">Loading levels...</p>       </div>
+                </div>`;           <p class="mt-2">Loading levels...</p>
+                </div>
+            try {
+                const response = await fetch('../api/admin/get_levels.php', { method: 'GET' });
+                const data = await response.json();
+
+                if (data.success && Array.isArray(data.levels) && data.levels.length > 0) {                const data = await response.json();
+                    renderLevels(data.levels);
+                } else {
+                    levelsContainer.innerHTML = `
+                        <div class="alert alert-info">                } else {
+                            <i class="bi bi-info-circle me-2"></i>
+                            No levels found.
+                        </div>`;or) {
+                }
+            } catch (error) {ontainer.innerHTML = '<p class="text-center text-danger">Error loading levels</p>';
+                console.error('Error loading levels:', error);
+                levelsContainer.innerHTML = `
+                    <div class="alert alert-danger">
+                        <i class="bi bi-exclamation-triangle me-2"></i>ion renderLevels(levels) {
+                        Error loading levels. Please try again.   const container = document.getElementById('levelsContainer');
+                    </div>`;            container.innerHTML = '';
+            }
+        }
+        }
+        function renderLevels(levels) {
+            const levelsContainer = document.getElementById('levelsContainer');
+            levelsContainer.innerHTML = '';
+
+            if (levels.length === 0) {
+                levelsContainer.innerHTML = `
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle me-2"></i>
+                        No levels found.
+                    </div>`;
+                return;
+            }
+
+            // Create a responsive table for each level
+            levels.forEach(level => {
+                const levelTable = document.createElement('div');
+                levelTable.className = 'level-table';
+                
+                // Table header with level info and delete all button
+                const tableHeader = document.createElement('div');
+                tableHeader.className = 'table-header';
+                tableHeader.innerHTML = `
+                    <div class="level-table-title">
+                        <div>
+                            <strong>Level ${level.level}</strong>
+                            <span class="badge bg-light text-dark ms-2">${level.total_count} Questions</span>
+                        </div>
+                        <button class="btn btn-sm btn-outline-light" onclick="deleteLevel(${level.level})">
+                            <i class="bi bi-trash me-1"></i> Delete All Questions
+                        </button>
+                    </div>
+                `;
+                levelTable.appendChild(tableHeader);
+                
+                // Table for question types
+                const tableDiv = document.createElement('div');
+                tableDiv.className = 'table-responsive';
+                tableDiv.innerHTML = `
+                    <table class="table table-hover mb-0">
+                        <tbody>
+                            <!-- MCQ Questions Row -->
+                            <tr>
+                                <td class="align-middle">
+                                    <div class="d-flex align-items-center">
+                                        <div class="type-icon">
+                                            <i class="bi bi-list-check text-primary"></i>
+                                        </div>
+                                        <div>
+                                            Multiple Choice
+                                            <span class="badge bg-secondary rounded-pill ms-2">${level.mcq_count}</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="text-end">
+                                    ${level.mcq_count > 0 ? 
+                                        `<button class="btn btn-sm btn-outline-danger" onclick="deleteLevelByType(${level.level}, 'mcq')">
+                                            <i class="bi bi-trash me-1"></i> Delete
+                                        </button>` : 
+                                        `<span class="text-muted">No questions</span>`
+                                    }
+                                </td>
+                            </tr>
+                            
+                            <!-- Fill in the Blank Questions Row -->
+                            <tr>
+                                <td class="align-middle">
+                                    <div class="d-flex align-items-center">
+                                        <div class="type-icon">
+                                            <i class="bi bi-input-cursor-text text-success"></i>
+                                        </div>
+                                        <div>
+                                            Fill in the Blank
+                                            <span class="badge bg-secondary rounded-pill ms-2">${level.fill_blank_count}</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="text-end">
+                                    ${level.fill_blank_count > 0 ? 
+                                        `<button class="btn btn-sm btn-outline-danger" onclick="deleteLevelByType(${level.level}, 'fill_blank')">
+                                            <i class="bi bi-trash me-1"></i> Delete
+                                        </button>` : 
+                                        `<span class="text-muted">No questions</span>`
+                                    }
+                                </td>
+                            </tr>
+                            
+                            <!-- Word Puzzles Row -->
+                            <tr>
+                                <td class="align-middle">
+                                    <div class="d-flex align-items-center">
+                                        <div class="type-icon">
+                                            <i class="bi bi-grid-3x3 text-warning"></i>
+                                        </div>
+                                        <div>
+                                            Word Puzzles
+                                            <span class="badge bg-secondary rounded-pill ms-2">${level.puzzle_count}</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="text-end">
+                                    ${level.puzzle_count > 0 ? 
+                                        `<button class="btn btn-sm btn-outline-danger" onclick="deleteLevelByType(${level.level}, 'puzzle')">
+                                            <i class="bi bi-trash me-1"></i> Delete
+                                        </button>` : 
+                                        `<span class="text-muted">No questions</span>`
+                                    }
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                `;
+                levelTable.appendChild(tableDiv);
+                
+                levelsContainer.appendChild(levelTable);
+            });
+        }
+
+        async function deleteLevel(level) {
+            if (!confirm(`Are you sure you want to delete Level ${level} and ALL associated questions? This action cannot be undone.`)) {
+                return;
+            }
+            try {
+                const response = await fetch('../api/admin/delete_level.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ level: level })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    alert(`Level ${level} deleted successfully.\n\nDeleted items:\n- ${data.deleted_count.mcq} MCQ questions\n- ${data.deleted_count.fill_blank} Fill in the Blank questions\n- ${data.deleted_count.puzzle} Word Puzzles\n\nTotal: ${data.deleted_count.total} items`);
+                    loadLevels();
+                } else {
+                    alert('Failed to delete level: ' + (data.message || 'Unknown error'));
+                }
+            } catch (error) {
+                console.error('Error deleting level:', error);
+                alert('Error deleting level');
+            }
+        }
+
+        async function deleteLevelByType(level, type) {
+            let typeLabel = '';
+            switch (type) {
+                case 'mcq':
+                    typeLabel = 'Multiple Choice';
+                    break;
+                case 'fill_blank':
+                    typeLabel = 'Fill in the Blank';
+                    break;
+                case 'puzzle':
+                    typeLabel = 'Word Puzzle';
+                    break;
+            }
+
+            if (!confirm(`Are you sure you want to delete all ${typeLabel} questions for Level ${level}? This action cannot be undone.`)) {
+                return;
+            }
+
+            try {
+                const response = await fetch('../api/admin/delete_level_by_type.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ level: level, type: type })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    alert(`${data.deleted_count} ${data.type_name} questions for Level ${level} deleted successfully.`);
+                    loadLevels();
+                } else {
+                    alert('Failed to delete questions: ' + (data.message || 'Unknown error'));
+                }
+            } catch (error) {
+                console.error('Error deleting questions by type:', error);
+                alert('Error deleting questions');
+            }
+        }
+    </script>
+</body>
+
+</html>
